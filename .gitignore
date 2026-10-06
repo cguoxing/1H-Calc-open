@@ -1,0 +1,21 @@
+# 系统与编辑器
+.DS_Store
+.vscode/
+.idea/
+.claude/
+
+# 微信开发者工具的个人配置
+project.private.config.json
+
+# 依赖与临时文件
+node_modules/
+tmp/
+test_output.pdf
+
+# 内部文档（未随开源发布）
+guide-images/
+guide-*.md
+
+# 真实用户数据与服务器配置，禁止入库
+west-host-backup/data/
+west-host-backup/config.php

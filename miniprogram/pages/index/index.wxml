@@ -1,0 +1,136 @@
+<view class="container">
+  <!-- WeChat-style AppBar simulated -->
+  <view class="appbar">
+    <view class="brand" bindtap="onGoHome">
+      <image class="logo" src="/images/logo.png" mode="aspectFit"></image>
+      <text>易计算</text>
+    </view>
+  </view>
+
+  <!-- Glass Search Bar -->
+  <view class="glass search-bar">
+    <textarea class="search-input" 
+      placeholder="{{searchPlaceholder}}"
+      placeholder-class="search-placeholder"
+      value="{{searchText}}"
+      bindinput="onSearchInput"
+      auto-height="{{true}}"
+      maxlength="-1"
+      disable-default-padding="{{true}}"
+    />
+    <view class="send-btn" bindtap="onSmartCalc">
+      <image class="send-icon" src="/images/send.svg" mode="aspectFit"></image>
+    </view>
+  </view>
+
+  <!-- Shortcuts Grid (3 columns) -->
+  <view class="shortcut-grid">
+    <view class="soft shortcut" bindtap="onTapProjects">
+      <view class="iconbox">
+        <image src="/images/folder.svg" mode="aspectFit"></image>
+      </view>
+      <view class="shortcut-text">
+        <text class="shortcut-title">我的项目</text>
+        <text class="shortcut-desc">管理取费项目</text>
+      </view>
+    </view>
+
+    <view class="soft shortcut" bindtap="onSelectStage" data-stage="{{quickCalcStage}}">
+      <view class="iconbox">
+        <image src="/images/doc.svg" mode="aspectFit"></image>
+      </view>
+      <view class="shortcut-text">
+        <text class="shortcut-title">{{quickCalcTitle}}</text>
+        <text class="shortcut-desc">{{quickCalcDesc}}</text>
+      </view>
+    </view>
+
+    <view class="soft shortcut" bindtap="onTapConverter">
+      <view class="iconbox">
+        <image src="/images/expand.svg" mode="aspectFit"></image>
+      </view>
+      <view class="shortcut-text">
+        <text class="shortcut-title">单位换算</text>
+        <text class="shortcut-desc">常用单位转换</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="stage-header">
+    <text class="stage-header-title">{{stageHeaderTitle}}</text>
+    <view class="stage-header-all" bindtap="onTapAllTools">
+      <text class="all-text">全部</text>
+      <view class="chev-small"></view>
+    </view>
+  </view>
+
+  <!-- Stages list of soft cards -->
+  <view class="stage-list">
+    <view class="soft stage-card" 
+          wx:for="{{stagesList}}" 
+          wx:key="id" 
+          bindtap="onTapStage" 
+          data-index="{{index}}">
+      <view class="iconbox">
+        <image src="/images/{{item.icon}}.svg" mode="aspectFit"></image>
+      </view>
+      <view class="stage-card-text">
+        <text class="stage-title">{{item.title}}</text>
+        <text class="stage-desc">{{item.desc}}</text>
+      </view>
+      <view class="chev"></view>
+    </view>
+  </view>
+
+  <!-- Bottom Grid (Standards & Policies) -->
+  <view class="bottom-grid">
+    <view class="soft bottom-card" bindtap="onTapStandard">
+      <view class="iconbox-bottom">
+        <image src="/images/tool-standard.svg" mode="aspectFit"></image>
+      </view>
+      <view class="bottom-card-text">
+        <text class="bottom-title">取费标准</text>
+        <text class="bottom-desc">2002版 · 基价表 · 专业系数</text>
+        <text class="bottom-desc">附表一至三</text>
+      </view>
+      <view class="chev-small-bottom"></view>
+    </view>
+
+    <view class="soft bottom-card" bindtap="onTapPolicy">
+      <view class="iconbox-bottom">
+        <image src="/images/tool-policy.svg" mode="aspectFit"></image>
+      </view>
+      <view class="bottom-card-text">
+        <text class="bottom-title">政策依据</text>
+        <text class="bottom-desc">国家 · 地方</text>
+        <text class="bottom-desc">行业标准</text>
+      </view>
+      <view class="chev-small-bottom"></view>
+    </view>
+  </view>
+
+  <!-- Stage Specialty Picker Modal -->
+  <view class="modal-overlay {{showStageModal ? 'open' : ''}}" bindtap="closeStageModal">
+    <view class="modal-sheet" catchtap="onPreventDefault">
+      <view class="modal-handle"></view>
+      <view class="modal-title">{{modalTitle}}</view>
+      <view class="modal-subtitle">请选择具体专业，进入计算器</view>
+      <scroll-view scroll-y class="specialty-scroll">
+        <view class="specialty-grid">
+          <view class="specialty-chip {{item.id === currentSelectedSpecialty ? 'selected' : ''}}" 
+                wx:for="{{currentSpecialties}}" 
+                wx:key="id" 
+                bindtap="onSelectSpecialty" 
+                data-specialty="{{item.id}}">
+            <view class="specialty-chip-text">
+              <text class="specialty-chip-name">{{item.name}}</text>
+              <text class="specialty-chip-coef">{{item.desc || '收费计算'}}</text>
+            </view>
+          </view>
+        </view>
+      </scroll-view>
+    </view>
+  </view>
+
+  <view class="copyright">Copyright © 2026 1+H ARCH</view>
+</view>

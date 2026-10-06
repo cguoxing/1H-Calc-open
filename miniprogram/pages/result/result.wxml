@@ -1,0 +1,828 @@
+<view class="container">
+  <!-- WeChat simulated Header Bar -->
+  <view class="appbar">
+    <view class="brand" bindtap="onGoHome">
+      <image class="logo" src="/images/logo.png" mode="aspectFit"></image>
+      <text>易计算</text>
+    </view>
+  </view>
+
+  <!-- Result Header Card (light tinted by project type) -->
+  <view class="result-header-card" style="background: linear-gradient(135deg, {{record.color}}28, {{record.color}}0F);">
+    <view class="result-label">
+      <text wx:if="{{record.stage === 'F4'}}">工程设计费合计</text>
+      <text wx:elif="{{record.stage === 'F1'}}">前期咨询费合计</text>
+      <text wx:elif="{{record.stage === 'F2'}}">规划取费合计</text>
+      <text wx:elif="{{record.stage === 'F3'}}">工程勘察费合计</text>
+      <text wx:elif="{{record.stage === 'F5'}}">造价咨询费合计</text>
+      <text wx:elif="{{record.stage === 'F6'}}">全过程咨询费合计</text>
+      <text wx:elif="{{record.stage === 'bidding'}}">招标代理费合计</text>
+      <text wx:elif="{{record.stage === 'supervision'}}">工程监理费合计</text>
+      <text wx:elif="{{record.stage === 'management'}}">建设管理费合计</text>
+      <text wx:elif="{{record.stage === 'F4b'}}">专项设计费合计</text>
+      <text wx:elif="{{record.stage === 'F1.4' || record.stage === 'F1_4'}}">单项咨询费合计</text>
+      <text wx:elif="{{record.stage === 'F2b'}}">土地整治费合计</text>
+      <text wx:elif="{{record.stage === 'F5b'}}">六张网设计费合计</text>
+    </view>
+    <view class="result-value" style="color: {{record.color || '#102744'}};">¥ {{record.calcDetail.total}} 万</view>
+    <!-- Subtitle matching index.html format -->
+    <view class="result-subtitle" wx:if="{{record.stage === 'F4'}}">计费额 {{record.calcDetail.cost}} 万元 · 基价 {{record.calcDetail.basePrice}} 万 · 系数 {{record.calcDetail.specialtyCoef}}×{{record.calcDetail.complexityCoef}}×{{record.calcDetail.netAdditionalCoef}}</view>
+    <view class="result-subtitle" wx:elif="{{record.stage === 'F6'}}">计费额 {{record.calcDetail.cost}} 万元 · 基价 {{record.calcDetail.basePrice}} 万 · 系数 {{record.calcDetail.specialtyCoef}}×{{record.calcDetail.complexityCoef}}×{{record.calcDetail.netAdditionalCoef}}</view>
+    <view class="result-subtitle" wx:elif="{{record.stage === 'F1'}}">投资额 {{record.calcDetail.cost}} 万元 · 基价 {{record.calcDetail.basePrice}} 万 · 系数 {{record.calcDetail.netAdditionalCoef}}</view>
+    <view class="result-subtitle" wx:elif="{{record.stage === 'F3'}}">工程费 {{record.calcDetail.cost}} 万元 · 基价 {{record.calcDetail.basePrice}} 万 · 系数 {{record.calcDetail.complexityCoef}}×{{record.calcDetail.siteComplexityCoef || record.calcDetail.siteCoef || 1}}×{{record.calcDetail.netAdditionalCoef}}</view>
+    <view class="result-subtitle" wx:elif="{{record.stage === 'F5' && record.calcDetail.costType !== 'steel_calc'}}">计费基数 {{record.calcDetail.cost}} 万元 · 基本费 {{record.calcDetail.basicFee}} 万</view>
+    <view class="result-subtitle" wx:elif="{{record.stage === 'F5' && record.calcDetail.costType === 'steel_calc'}}">钢筋用量 {{record.calcDetail.steelWeight}} 吨 · 基本费 {{record.calcDetail.basicFee}} 万</view>
+    <view class="result-subtitle" wx:elif="{{record.stage === 'F2'}}">规模面积 {{record.calcDetail.cost}} · 基本费用 {{record.calcDetail.basicFee}} 万</view>
+    <view class="result-subtitle" wx:elif="{{record.stage === 'bidding'}}">中标金额 {{record.calcDetail.cost}} 万元 · 代理费基价 {{record.calcDetail.basePrice}} 万</view>
+    <view class="result-subtitle" wx:elif="{{record.stage === 'supervision'}}">概算投资 {{record.calcDetail.cost}} 万元 · 基价 {{record.calcDetail.basePrice}} 万 · 专业系数 {{record.calcDetail.professionCoef}} · 高程系数 {{record.calcDetail.elevationCoef}}</view>
+    <view class="result-subtitle" wx:elif="{{record.stage === 'management'}}">总概算 {{record.calcDetail.cost}} 万元 · 管理费 {{record.calcDetail.managementFee}} 万 · 代建系数 {{record.calcDetail.agentCoef}}</view>
+    <view class="result-subtitle" wx:elif="{{record.stage === 'F4b'}}">专项设计 · {{record.calcDetail.stageName || ''}}</view>
+    <view class="result-subtitle" wx:elif="{{record.stage === 'F1.4' || record.stage === 'F1_4'}}">{{record.calcDetail.consultTypeName || ''}} · {{record.calcDetail.subTypeName || ''}}</view>
+    <view class="result-subtitle" wx:elif="{{record.stage === 'F2b'}}">施工费 {{record.calcDetail.cost}} 万元 · 勘测费 {{record.calcDetail.extraDetails[0].amount || 0}} 万</view>
+    <view class="result-subtitle" wx:elif="{{record.stage === 'F5b'}}">计费额 {{record.calcDetail.cost}} 万元 · 基价 {{record.calcDetail.basePrice}} 万 · 网络 {{record.calcDetail.networkName || ''}}</view>
+  </view>
+
+  <view class="soft result-project-card">
+    <view class="result-project-text">
+      <text class="result-project-label">项目名称</text>
+      <text class="result-project-name">{{record.projectName || record.name || '未命名项目'}}</text>
+    </view>
+    <view class="result-project-edit" bindtap="onEditProjectName">修改</view>
+  </view>
+
+  <!-- Export Status Banner -->
+  <view class="export-status-banner {{record.isExported ? 'exported' : 'not-exported'}}">
+    <text class="status-dot"></text>
+    <text>{{record.isExported ? '报价单已导出' : '报价单未导出 (请点击下方按钮导出)'}}</text>
+  </view>
+
+  <!-- F4/F6 Design details -->
+  <block wx:if="{{record.stage === 'F4' || record.stage === 'F6'}}">
+    <view class="form-section">费用明细</view>
+    <view class="glass form-card">
+      <view class="row big">
+        <text class="label">计费额</text>
+        <text class="value">{{record.calcDetail.cost}} 万元</text>
+      </view>
+
+      <view class="row big">
+        <text class="label">工程设计基价</text>
+        <text class="value">{{record.calcDetail.basePrice}} 万元</text>
+      </view>
+      <view class="row source-note">
+        <text></text>
+        <text class="source-text">依据：计价格[2002]10号 工程设计收费基价表</text>
+      </view>
+
+      <view class="row big">
+        <text class="label">{{record.stage === 'F4' ? '专业调整系数' : '统筹调整系数'}}</text>
+        <text class="value">{{record.calcDetail.specialtyCoef}}（{{record.calcDetail.specialtyName}}）</text>
+      </view>
+
+      <view class="row big">
+        <text class="label">复杂程度系数</text>
+        <text class="value">{{record.calcDetail.complexityCoef}}（{{record.calcDetail.complexityName || 'II级'}}）</text>
+      </view>
+
+      <view class="row big">
+        <text class="label">附加调整系数</text>
+        <text class="value">{{record.calcDetail.netAdditionalCoef}}</text>
+      </view>
+
+      <view class="row big" wx:if="{{record.calcDetail.extraDetails.length > 0}}" wx:for="{{record.calcDetail.extraDetails}}" wx:key="name">
+        <text class="label">{{item.name}} ({{item.ratio}})</text>
+        <text class="value">+{{item.amount}} 万元</text>
+      </view>
+
+      <view class="row big" wx:if="{{record.calcDetail.discount < 100}}">
+        <text class="label">总收费比例</text>
+        <text class="value">{{record.calcDetail.discount}}%</text>
+      </view>
+
+      <view class="row big" wx:if="{{record.calcDetail.taxRate > 0}}">
+        <text class="label">增值税率 ({{record.calcDetail.taxRate}}%)</text>
+        <text class="value">+{{record.calcDetail.tax}} 万元</text>
+      </view>
+
+      <view class="row big" style="background: rgba(13, 29, 53, 0.04);">
+        <text style="font-weight: 700;">合计</text>
+        <text class="value" style="font-size: 34rpx; font-weight: 800; color: var(--ink);">{{record.calcDetail.total}} 万元</text>
+      </view>
+    </view>
+  </block>
+
+  <!-- F1 Pre-consulting details -->
+  <block wx:if="{{record.stage === 'F1'}}">
+    <view class="form-section">费用明细</view>
+    <view class="glass form-card">
+      <view class="row big">
+        <text class="label">估算投资额</text>
+        <text class="value">{{record.calcDetail.cost}} 万元</text>
+      </view>
+
+      <view class="row big">
+        <text class="label">咨询基价</text>
+        <text class="value">{{record.calcDetail.basePrice}} 万元</text>
+      </view>
+      <view class="row source-note">
+        <text></text>
+        <text class="source-text">依据：计价格[2002]125号 建设项目环境影响咨询收费标准</text>
+      </view>
+
+      <view class="row big" wx:if="{{record.calcDetail.industryCoef !== undefined}}">
+        <text class="label">行业调整系数</text>
+        <text class="value">{{record.calcDetail.industryCoef}}</text>
+      </view>
+
+      <view class="row big" wx:if="{{record.calcDetail.complexCoef !== undefined}}">
+        <text class="label">复杂程度系数</text>
+        <text class="value">{{record.calcDetail.complexCoef}}</text>
+      </view>
+
+      <view class="row big" wx:if="{{record.calcDetail.industryCoef === undefined}}">
+        <text class="label">行业调整系数</text>
+        <text class="value">{{record.calcDetail.netAdditionalCoef}}</text>
+      </view>
+
+      <view class="row big">
+        <text class="label">收费比例</text>
+        <text class="value">{{record.calcDetail.discount}}%</text>
+      </view>
+
+      <view class="row big" wx:if="{{record.calcDetail.taxRate > 0}}">
+        <text class="label">增值税率 ({{record.calcDetail.taxRate}}%)</text>
+        <text class="value">+{{record.calcDetail.tax}} 万元</text>
+      </view>
+
+      <view class="row big" style="background: rgba(13, 29, 53, 0.04);">
+        <text style="font-weight: 700;">合计</text>
+        <text class="value" style="font-size: 34rpx; font-weight: 800; color: var(--ink);">{{record.calcDetail.total}} 万元</text>
+      </view>
+    </view>
+  </block>
+
+  <!-- F3 Survey details -->
+  <block wx:if="{{record.stage === 'F3'}}">
+    <view class="form-section">费用明细</view>
+    <view class="glass form-card">
+      <view class="row big">
+        <text class="label">工程费</text>
+        <text class="value">{{record.calcDetail.cost}} 万元</text>
+      </view>
+
+      <view class="row big">
+        <text class="label">勘察基价</text>
+        <text class="value">{{record.calcDetail.basePrice}} 万元</text>
+      </view>
+      <view class="row source-note">
+        <text></text>
+        <text class="source-text">依据：计价格[2002]10号 岩土工程勘察收费基价表</text>
+      </view>
+
+      <view class="row big">
+        <text class="label">工程复杂程度系数</text>
+        <text class="value">{{record.calcDetail.complexityCoef}}</text>
+      </view>
+
+      <view class="row big">
+        <text class="label">场地复杂程度系数</text>
+        <text class="value">{{record.calcDetail.siteComplexityCoef || record.calcDetail.siteCoef || 1}}</text>
+      </view>
+
+      <view class="row big">
+        <text class="label">附加调整系数</text>
+        <text class="value">{{record.calcDetail.netAdditionalCoef}}</text>
+      </view>
+
+      <view class="row big" wx:if="{{record.calcDetail.discount < 100}}">
+        <text class="label">总收费比例</text>
+        <text class="value">{{record.calcDetail.discount}}%</text>
+      </view>
+
+      <view class="row big" wx:if="{{record.calcDetail.taxRate > 0}}">
+        <text class="label">增值税率 ({{record.calcDetail.taxRate}}%)</text>
+        <text class="value">+{{record.calcDetail.tax}} 万元</text>
+      </view>
+
+      <view class="row big" style="background: rgba(13, 29, 53, 0.04);">
+        <text style="font-weight: 700;">合计</text>
+        <text class="value" style="font-size: 34rpx; font-weight: 800; color: var(--ink);">{{record.calcDetail.total}} 万元</text>
+      </view>
+    </view>
+  </block>
+
+  <!-- F5 Cost Consulting details -->
+  <block wx:if="{{record.stage === 'F5'}}">
+    <view class="form-section">费用明细</view>
+    <view class="glass form-card">
+      <view class="row big" wx:if="{{record.calcDetail.costType !== 'steel_calc'}}">
+        <text class="label">计费基数金额</text>
+        <text class="value">{{record.calcDetail.cost}} 万元</text>
+      </view>
+
+      <view class="row big" wx:if="{{record.calcDetail.costType === 'steel_calc'}}">
+        <text class="label">钢筋计算用量</text>
+        <text class="value">{{record.calcDetail.steelWeight}} 吨</text>
+      </view>
+
+      <view class="row big">
+        <text class="label">咨询项目基本费</text>
+        <text class="value">{{record.calcDetail.basicFee}} 万元</text>
+      </view>
+
+      <view class="row big" wx:if="{{record.calcDetail.costType === 'settlement_audit'}}">
+        <text class="label">送审核减额</text>
+        <text class="value">{{record.calcDetail.deduction}} 万元</text>
+      </view>
+
+      <view class="row big" wx:if="{{record.calcDetail.costType === 'settlement_audit'}}">
+        <text class="label">核减效益费 (5%)</text>
+        <text class="value">+{{record.calcDetail.benefitFee}} 万元</text>
+      </view>
+
+      <view class="row big" wx:if="{{record.calcDetail.discount < 100}}">
+        <text class="label">总收费比例</text>
+        <text class="value">{{record.calcDetail.discount}}%</text>
+      </view>
+
+      <view class="row big" wx:if="{{record.calcDetail.taxRate > 0}}">
+        <text class="label">增值税率 ({{record.calcDetail.taxRate}}%)</text>
+        <text class="value">+{{record.calcDetail.tax}} 万元</text>
+      </view>
+
+      <view class="row big" style="background: rgba(13, 29, 53, 0.04);">
+        <text style="font-weight: 700;">合计</text>
+        <text class="value" style="font-size: 34rpx; font-weight: 800; color: var(--ink);">{{record.calcDetail.total}} 万元</text>
+      </view>
+    </view>
+
+    <!-- F5 sliding scale details -->
+    <view class="form-section" wx:if="{{record.calcDetail.diffBreakdown && record.calcDetail.diffBreakdown.length > 0}}">差额定率分档累进明细</view>
+    <view class="glass form-card" wx:if="{{record.calcDetail.diffBreakdown && record.calcDetail.diffBreakdown.length > 0}}">
+      <view class="row big" wx:for="{{record.calcDetail.diffBreakdown}}" wx:key="range" style="border-bottom: 1rpx solid rgba(0,0,0,0.02); font-size: 26rpx; padding: 16rpx 24rpx;">
+        <text style="color: var(--text-secondary); width: 220rpx;">分段: {{item.range}}万</text>
+        <text style="color: var(--text-secondary); text-align: left; flex: 1;">基数: {{item.base}}万 × {{item.rateText}}</text>
+        <text style="color: var(--ink);">{{item.charge}} 万</text>
+      </view>
+    </view>
+  </block>
+
+  <!-- F2 Land Planning details -->
+  <block wx:if="{{record.stage === 'F2'}}">
+    <view class="form-section">费用明细</view>
+    <view class="glass form-card">
+      <view class="row big">
+        <text class="label">规划规模面积</text>
+        <text class="value">{{record.calcDetail.cost}} {{record.calcDetail.planningType === 'overall' ? 'km²' : '万㎡'}}</text>
+      </view>
+
+      <view class="row big">
+        <text class="label">规划基本服务费</text>
+        <text class="value">{{record.calcDetail.basicFee}} 万元</text>
+      </view>
+
+      <view class="row big" wx:if="{{record.calcDetail.minFeeApplied}}">
+        <text class="label">保底服务成本</text>
+        <text class="value" style="color: var(--ink);">已触发保底限额</text>
+      </view>
+
+      <view class="row big" wx:if="{{record.calcDetail.discount < 100}}">
+        <text class="label">总收费比例</text>
+        <text class="value">{{record.calcDetail.discount}}%</text>
+      </view>
+
+      <view class="row big" wx:if="{{record.calcDetail.taxRate > 0}}">
+        <text class="label">增值税率 ({{record.calcDetail.taxRate}}%)</text>
+        <text class="value">+{{record.calcDetail.tax}} 万元</text>
+      </view>
+
+      <view class="row big" style="background: rgba(13, 29, 53, 0.04);">
+        <text style="font-weight: 700;">合计</text>
+        <text class="value" style="font-size: 34rpx; font-weight: 800; color: var(--ink);">{{record.calcDetail.total}} 万元</text>
+      </view>
+    </view>
+  </block>
+
+  <!-- Bidding details -->
+  <block wx:if="{{record.stage === 'bidding'}}">
+    <view class="form-section">费用明细</view>
+    <view class="glass form-card">
+      <view class="row big">
+        <text class="label">中标金额</text>
+        <text class="value">{{record.calcDetail.cost}} 万元</text>
+      </view>
+
+      <view class="row big">
+        <text class="label">招标类型</text>
+        <text class="value">{{record.calcDetail.biddingTypeName}}</text>
+      </view>
+
+      <view class="row big">
+        <text class="label">政策口径</text>
+        <text class="value">{{record.calcDetail.policyName || '国家标准'}}</text>
+      </view>
+
+      <view class="row big">
+        <text class="label">服务内容</text>
+        <text class="value">{{record.calcDetail.serviceScopeName || '全过程代理'}}</text>
+      </view>
+
+      <view class="row big">
+        <text class="label">代理费基价</text>
+        <text class="value">{{record.calcDetail.basePrice}} 万元</text>
+      </view>
+      <view class="row source-note">
+        <text></text>
+        <text class="source-text">依据：{{record.calcDetail.policySource || '计价格[2002]1980号 招标代理服务收费管理暂行办法'}}</text>
+      </view>
+
+      <view class="row big">
+        <text class="label">收费比例</text>
+        <text class="value">{{record.calcDetail.discount}}%</text>
+      </view>
+
+      <view class="row big" wx:if="{{record.calcDetail.taxRate > 0}}">
+        <text class="label">增值税率 ({{record.calcDetail.taxRate}}%)</text>
+        <text class="value">+{{record.calcDetail.tax}} 万元</text>
+      </view>
+
+      <view class="row big" style="background: rgba(13, 29, 53, 0.04);">
+        <text style="font-weight: 700;">合计</text>
+        <text class="value" style="font-size: 34rpx; font-weight: 800; color: var(--ink);">{{record.calcDetail.total}} 万元</text>
+      </view>
+    </view>
+
+    <!-- Bidding sliding scale details -->
+    <view class="form-section" wx:if="{{record.calcDetail.diffBreakdown && record.calcDetail.diffBreakdown.length > 0}}">差额定率分档累进明细</view>
+    <view class="glass form-card" wx:if="{{record.calcDetail.diffBreakdown && record.calcDetail.diffBreakdown.length > 0}}">
+      <view class="row big" wx:for="{{record.calcDetail.diffBreakdown}}" wx:key="range" style="border-bottom: 1rpx solid rgba(0,0,0,0.02); font-size: 26rpx; padding: 16rpx 24rpx;">
+        <text style="color: var(--text-secondary); width: 220rpx;">分段: {{item.range}}万</text>
+        <text style="color: var(--text-secondary); text-align: left; flex: 1;">基数: {{item.base}}万 × {{item.rateText}}</text>
+        <text style="color: var(--ink);">{{item.charge}} 万</text>
+      </view>
+    </view>
+  </block>
+
+  <!-- Supervision details -->
+  <block wx:if="{{record.stage === 'supervision'}}">
+    <view class="form-section">费用明细</view>
+    <view class="glass form-card">
+      <view class="row big">
+        <text class="label">工程概算投资额</text>
+        <text class="value">{{record.calcDetail.cost}} 万元</text>
+      </view>
+
+      <view class="row big">
+        <text class="label">监理服务基价</text>
+        <text class="value">{{record.calcDetail.basePrice}} 万元</text>
+      </view>
+      <view class="row source-note">
+        <text></text>
+        <text class="source-text">依据：发改价格[2007]670号 建设工程监理与相关服务收费管理规定</text>
+      </view>
+
+      <view class="row big">
+        <text class="label">专业调整系数</text>
+        <text class="value">{{record.calcDetail.professionCoef}}（{{record.calcDetail.professionName}}）</text>
+      </view>
+
+      <view class="row big">
+        <text class="label">高程调整系数</text>
+        <text class="value">{{record.calcDetail.elevationCoef}}（{{record.calcDetail.elevationName}}）</text>
+      </view>
+
+      <view class="row big">
+        <text class="label">监理服务费（折扣前）</text>
+        <text class="value">{{record.calcDetail.feeBeforeDiscount}} 万元</text>
+      </view>
+
+      <view class="row big" wx:if="{{record.calcDetail.discount < 100}}">
+        <text class="label">浮动幅度</text>
+        <text class="value">{{record.calcDetail.discount}}%</text>
+      </view>
+
+      <view class="row big" wx:if="{{record.calcDetail.taxRate > 0}}">
+        <text class="label">增值税率 ({{record.calcDetail.taxRate}}%)</text>
+        <text class="value">+{{record.calcDetail.tax}} 万元</text>
+      </view>
+
+      <view class="row big" style="background: rgba(13, 29, 53, 0.04);">
+        <text style="font-weight: 700;">合计</text>
+        <text class="value" style="font-size: 34rpx; font-weight: 800; color: var(--ink);">{{record.calcDetail.total}} 万元</text>
+      </view>
+    </view>
+  </block>
+
+  <!-- Construction Management details -->
+  <block wx:if="{{record.stage === 'management'}}">
+    <view class="form-section">费用明细</view>
+    <view class="glass form-card">
+      <view class="row big">
+        <text class="label">工程总概算</text>
+        <text class="value">{{record.calcDetail.cost}} 万元</text>
+      </view>
+
+      <view class="row big">
+        <text class="label">建设单位管理费</text>
+        <text class="value">{{record.calcDetail.managementFee}} 万元</text>
+      </view>
+
+      <view class="row big" wx:if="{{record.calcDetail.agentCoef < 1.0}}">
+        <text class="label">代建系数</text>
+        <text class="value">{{record.calcDetail.agentCoef}}（{{record.calcDetail.agentCoefLabel}}）</text>
+      </view>
+
+      <view class="row big" wx:if="{{record.calcDetail.agentCoef < 1.0}}">
+        <text class="label">代建管理费</text>
+        <text class="value">{{record.calcDetail.feeBeforeDiscount}} 万元</text>
+      </view>
+
+      <view class="row big" wx:if="{{record.calcDetail.discount < 100}}">
+        <text class="label">浮动幅度</text>
+        <text class="value">{{record.calcDetail.discount}}%</text>
+      </view>
+
+      <view class="row big" wx:if="{{record.calcDetail.taxRate > 0}}">
+        <text class="label">增值税率 ({{record.calcDetail.taxRate}}%)</text>
+        <text class="value">+{{record.calcDetail.tax}} 万元</text>
+      </view>
+
+      <view class="row big" style="background: rgba(13, 29, 53, 0.04);">
+        <text style="font-weight: 700;">合计</text>
+        <text class="value" style="font-size: 34rpx; font-weight: 800; color: var(--ink);">{{record.calcDetail.total}} 万元</text>
+      </view>
+    </view>
+
+    <!-- 差额定率累进明细 -->
+    <view class="form-section" wx:if="{{record.calcDetail.diffBreakdown && record.calcDetail.diffBreakdown.length > 0}}">差额定率累进明细</view>
+    <view class="glass form-card" wx:if="{{record.calcDetail.diffBreakdown && record.calcDetail.diffBreakdown.length > 0}}">
+      <view class="row big" wx:for="{{record.calcDetail.diffBreakdown}}" wx:key="range" style="border-bottom: 1rpx solid rgba(0,0,0,0.02); font-size: 26rpx; padding: 16rpx 24rpx;">
+        <text style="color: var(--text-secondary); width: 220rpx;">分段: {{item.range}}万</text>
+        <text style="color: var(--text-secondary); text-align: left; flex: 1;">基数: {{item.base}}万 × {{item.rateText}}</text>
+        <text style="color: var(--ink);">{{item.charge}} 万</text>
+      </view>
+    </view>
+  </block>
+
+  <!-- F4b Specialty Design details -->
+  <block wx:if="{{record.stage === 'F4b'}}">
+    <view class="form-section">费用明细</view>
+    <view class="glass form-card">
+      <view class="row big">
+        <text class="label">专项类型</text>
+        <text class="value">{{record.calcDetail.stageName || record.stageName || '专项设计'}}</text>
+      </view>
+
+      <!-- 1. 普通面积法 -->
+      <block wx:if="{{record.calcDetail.area && record.calcDetail.unitPrice}}">
+        <view class="row big">
+          <text class="label">计费面积</text>
+          <text class="value">{{record.calcDetail.area}} m²</text>
+        </view>
+        <view class="row big">
+          <text class="label">取费标准</text>
+          <text class="value">{{record.calcDetail.unitPrice}} 元/m²</text>
+        </view>
+        <view class="row big" wx:if="{{record.calcDetail.designerCoef > 1}}">
+          <text class="label">名家设计师调整系数</text>
+          <text class="value">×{{record.calcDetail.designerCoef}}</text>
+        </view>
+        <view class="row big" wx:if="{{record.calcDetail.lightingType}}">
+          <text class="label">照明类型</text>
+          <text class="value">{{record.calcDetail.lightingType}}</text>
+        </view>
+        <view class="row big" style="border-top:1rpx dashed var(--line); border-bottom:1rpx dashed var(--line); margin: 10rpx 0; padding: 15rpx 0; background: rgba(0, 105, 92, 0.03);">
+          <text class="label" style="color: #00695C; font-weight: 600;">计算公式</text>
+          <text class="value" style="color: #00695C; font-weight: 700; font-family: monospace;">{{record.calcDetail.area}} m² × {{record.calcDetail.unitPrice}} 元/m²{{record.calcDetail.designerCoef > 1 ? ' × ' + record.calcDetail.designerCoef : ''}} = {{record.calcDetail.basicFee}} 万元</text>
+        </view>
+        <view class="row big">
+          <text class="label">基本费</text>
+          <text class="value">{{record.calcDetail.basicFee}} 万元</text>
+        </view>
+      </block>
+
+      <!-- 2. 私宅自建设计（S4） -->
+      <block wx:elif="{{record.calcDetail.area && record.calcDetail.designRate}}">
+        <view class="row big">
+          <text class="label">建筑设计面积</text>
+          <text class="value">{{record.calcDetail.area}} m²</text>
+        </view>
+        <view class="row big">
+          <text class="label">建筑设计单价</text>
+          <text class="value">{{record.calcDetail.designRate}} 元/m²</text>
+        </view>
+        <view class="row big" style="border-top:1rpx dashed var(--line); margin-top: 10rpx; padding-top: 10rpx;">
+          <text class="label" style="font-size: 24rpx; color: var(--text-sec);">建筑设计费计算</text>
+          <text class="value" style="font-family: monospace; font-size: 24rpx; color: var(--ink);">{{record.calcDetail.area}} m² × {{record.calcDetail.designRate}} 元/m² = {{record.calcDetail.basicFee - record.calcDetail.decoFee}} 万元</text>
+        </view>
+
+        <block wx:if="{{record.calcDetail.includeDeco}}">
+          <view class="row big" style="margin-top: 15rpx;">
+            <text class="label">室内设计单价</text>
+            <text class="value">{{record.calcDetail.decoDesignRate}} 元/m²</text>
+          </view>
+          <view class="row big" style="border-bottom:1rpx dashed var(--line); margin-bottom: 10rpx; padding-bottom: 10rpx;">
+            <text class="label" style="font-size: 24rpx; color: var(--text-sec);">室内设计费计算</text>
+            <text class="value" style="font-family: monospace; font-size: 24rpx; color: var(--ink);">{{record.calcDetail.area}} m² × {{record.calcDetail.decoDesignRate}} 元/m² = {{record.calcDetail.decoFee}} 万元</text>
+          </view>
+        </block>
+
+        <view class="row big">
+          <text class="label">基本费合计</text>
+          <text class="value">{{record.calcDetail.basicFee}} 万元</text>
+        </view>
+      </block>
+
+      <!-- 3. 工程费法 -->
+      <block wx:elif="{{record.calcDetail.cost}}">
+        <view class="row big">
+          <text class="label">计费基数</text>
+          <text class="value">{{record.calcDetail.cost}} 万元</text>
+        </view>
+        <view class="row big" wx:if="{{record.calcDetail.basePrice}}">
+          <text class="label">设计基价</text>
+          <text class="value">{{record.calcDetail.basePrice}} 万元</text>
+        </view>
+        <view class="row source-note" wx:if="{{record.calcDetail.basePrice}}">
+          <text></text>
+          <text class="source-text">依据：计价格[2002]10号 工程设计收费基价表</text>
+        </view>
+        <view class="row big" wx:if="{{record.calcDetail.specialtyCoef > 0}}">
+          <text class="label">专业调整系数</text>
+          <text class="value">×{{record.calcDetail.specialtyCoef}}</text>
+        </view>
+        <view class="row big" wx:if="{{record.calcDetail.complexityCoef > 0}}">
+          <text class="label">复杂程度系数</text>
+          <text class="value">×{{record.calcDetail.complexityCoef}}</text>
+        </view>
+        <view class="row big" wx:if="{{record.calcDetail.baseDecoCoef > 0}}">
+          <text class="label">附加调整系数</text>
+          <text class="value">×{{record.calcDetail.baseDecoCoef}}</text>
+        </view>
+        <view class="row big" wx:if="{{record.calcDetail.otherServiceCoef > 0}}">
+          <text class="label">附加其他服务系数</text>
+          <text class="value">×{{record.calcDetail.otherServiceCoef}}</text>
+        </view>
+        <view class="row big" wx:if="{{record.calcDetail.netAddCoef > 0}}">
+          <text class="label">综合附加系数</text>
+          <text class="value">×{{record.calcDetail.netAddCoef}}</text>
+        </view>
+        <view class="row big" style="border-top:1rpx dashed var(--line); border-bottom:1rpx dashed var(--line); margin: 10rpx 0; padding: 15rpx 0; background: rgba(0, 105, 92, 0.03);">
+          <text class="label" style="color: #00695C; font-weight: 600;">计算公式</text>
+          <text class="value" style="color: #00695C; font-weight: 700; font-family: monospace;">{{record.calcDetail.basePrice}} × {{record.calcDetail.specialtyCoef || 1}} × {{record.calcDetail.complexityCoef}} × {{record.calcDetail.netAddCoef}} = {{record.calcDetail.basicFee}} 万元</text>
+        </view>
+        <view class="row big">
+          <text class="label">基本服务费</text>
+          <text class="value">{{record.calcDetail.basicFee}} 万元</text>
+        </view>
+      </block>
+
+      <!-- 4. 导视制作安装清单法 -->
+      <block wx:elif="{{record.calcDetail.productionFee}}">
+        <view class="row big">
+          <text class="label">标识制作费用</text>
+          <text class="value">{{record.calcDetail.productionFee}} 万元</text>
+        </view>
+        <view class="row big">
+          <text class="label">安装工程费率</text>
+          <text class="value">{{record.calcDetail.installRate}}%</text>
+        </view>
+        <view class="row big" style="border-top:1rpx dashed var(--line); border-bottom:1rpx dashed var(--line); margin: 10rpx 0; padding: 15rpx 0; background: rgba(0, 105, 92, 0.03);">
+          <text class="label" style="color: #00695C; font-weight: 600;">计算公式</text>
+          <text class="value" style="color: #00695C; font-weight: 700; font-family: monospace;">{{record.calcDetail.productionFee}} + {{record.calcDetail.productionFee}} × {{record.calcDetail.installRate}}% = {{record.calcDetail.basicFee}} 万元</text>
+        </view>
+        <view class="row big">
+          <text class="label">基本费合计</text>
+          <text class="value">{{record.calcDetail.basicFee}} 万元</text>
+        </view>
+      </block>
+
+      <!-- 共有字段 -->
+      <view class="row big" wx:if="{{record.calcDetail.discount < 100}}">
+        <text class="label">收费比例</text>
+        <text class="value">{{record.calcDetail.discount}}%</text>
+      </view>
+      <view class="row big" wx:if="{{record.calcDetail.taxRate > 0}}">
+        <text class="label">增值税率 ({{record.calcDetail.taxRate}}%)</text>
+        <text class="value">+{{record.calcDetail.tax}} 万元</text>
+      </view>
+      <view class="row big" style="background: rgba(0, 105, 92, 0.05);">
+        <text style="font-weight: 700; color: #00695C;">合计费用</text>
+        <text class="value" style="font-size: 34rpx; font-weight: 800; color: #00695C;">{{record.calcDetail.total}} 万元</text>
+      </view>
+    </view>
+  </block>
+
+  <!-- F1.4 Condition Consulting details -->
+  <block wx:if="{{record.stage === 'F1.4' || record.stage === 'F1_4'}}">
+    <view class="form-section">费用明细</view>
+    <view class="glass form-card">
+      <view class="row big" wx:if="{{record.calcDetail.cost}}">
+        <text class="label">项目投资额</text>
+        <text class="value">{{record.calcDetail.cost}} 万元</text>
+      </view>
+      <view class="row big">
+        <text class="label">咨询类型</text>
+        <text class="value">{{record.calcDetail.consultTypeName || ''}}</text>
+      </view>
+      <view class="row big">
+        <text class="label">子类型</text>
+        <text class="value">{{record.calcDetail.subTypeName || ''}}</text>
+      </view>
+      <view class="row big" wx:if="{{record.calcDetail.basePrice}}">
+        <text class="label">基础费用</text>
+        <text class="value">{{record.calcDetail.basePrice}} 万元</text>
+      </view>
+      <view class="row big" wx:if="{{record.calcDetail.industryCoef}}">
+        <text class="label">行业调整系数</text>
+        <text class="value">×{{record.calcDetail.industryCoef}}</text>
+      </view>
+      <view class="row big" wx:if="{{record.calcDetail.sensitiveCoef}}">
+        <text class="label">敏感区系数</text>
+        <text class="value">×{{record.calcDetail.sensitiveCoef}}</text>
+      </view>
+      <view class="row big" wx:if="{{record.calcDetail.formula}}">
+        <text class="label">计算公式</text>
+        <text class="value">{{record.calcDetail.formula}}</text>
+      </view>
+      <view class="row big" wx:if="{{record.calcDetail.discount < 100}}">
+        <text class="label">收费比例</text>
+        <text class="value">{{record.calcDetail.discount}}%</text>
+      </view>
+      <view class="row big" wx:if="{{record.calcDetail.taxRate > 0}}">
+        <text class="label">增值税率 ({{record.calcDetail.taxRate}}%)</text>
+        <text class="value">+{{record.calcDetail.tax}} 万元</text>
+      </view>
+      <view class="row big" style="background: rgba(13, 29, 53, 0.04);">
+        <text style="font-weight: 700;">合计</text>
+        <text class="value" style="font-size: 34rpx; font-weight: 800; color: var(--ink);">{{record.calcDetail.total}} 万元</text>
+      </view>
+    </view>
+  </block>
+
+  <!-- F2b Land Consolidation details -->
+  <block wx:if="{{record.stage === 'F2b'}}">
+    <view class="form-section">费用明细</view>
+    <view class="glass form-card">
+      <view class="row big">
+        <text class="label">工程施工费</text>
+        <text class="value">{{record.calcDetail.cost}} 万元</text>
+      </view>
+      <view class="row big" wx:if="{{record.calcDetail.extraDetails.length > 0}}" wx:for="{{record.calcDetail.extraDetails}}" wx:key="name">
+        <text class="label">{{item.name}} ({{item.ratio}})</text>
+        <text class="value">{{item.amount}} 万元</text>
+      </view>
+      <view class="row big" wx:if="{{record.calcDetail.specialtyCoef}}">
+        <text class="label">调整系数</text>
+        <text class="value">{{record.calcDetail.specialtyCoef}}（{{record.calcDetail.specialtyName}}）</text>
+      </view>
+      <view class="row big" wx:if="{{record.calcDetail.terrainCoef}}">
+        <text class="label">地貌系数</text>
+        <text class="value">×{{record.calcDetail.terrainCoef}}</text>
+      </view>
+      <view class="row big" wx:if="{{record.calcDetail.townshipCoef}}">
+        <text class="label">乡镇系数</text>
+        <text class="value">×{{record.calcDetail.townshipCoef}}</text>
+      </view>
+      <view class="row big" wx:if="{{record.calcDetail.scaleCoef}}">
+        <text class="label">规模系数</text>
+        <text class="value">×{{record.calcDetail.scaleCoef}}</text>
+      </view>
+      <view class="row big" wx:if="{{record.calcDetail.specialTotal > 0}}">
+        <text class="label">专项服务叠加</text>
+        <text class="value">+{{record.calcDetail.specialTotal}} 万元</text>
+      </view>
+      <view class="row big" wx:if="{{record.calcDetail.discount < 100}}">
+        <text class="label">收费比例</text>
+        <text class="value">{{record.calcDetail.discount}}%</text>
+      </view>
+      <view class="row big" wx:if="{{record.calcDetail.taxRate > 0}}">
+        <text class="label">增值税率 ({{record.calcDetail.taxRate}}%)</text>
+        <text class="value">+{{record.calcDetail.tax}} 万元</text>
+      </view>
+      <view class="row big" style="background: rgba(13, 29, 53, 0.04);">
+        <text style="font-weight: 700;">合计</text>
+        <text class="value" style="font-size: 34rpx; font-weight: 800; color: var(--ink);">{{record.calcDetail.total}} 万元</text>
+      </view>
+    </view>
+  </block>
+
+  <!-- F5b Six Networks details -->
+  <block wx:if="{{record.stage === 'F5b'}}">
+    <view class="form-section">费用明细</view>
+    <view class="glass form-card">
+      <view class="row big">
+        <text class="label">工程计费额</text>
+        <text class="value">{{record.calcDetail.cost}} 万元</text>
+      </view>
+      <view class="row big">
+        <text class="label">网络类型</text>
+        <text class="value">{{record.calcDetail.networkName || ''}}</text>
+      </view>
+      <view class="row big">
+        <text class="label">工程类型</text>
+        <text class="value">{{record.calcDetail.specialtyName || ''}}</text>
+      </view>
+      <view class="row big">
+        <text class="label">设计基价</text>
+        <text class="value">{{record.calcDetail.basePrice}} 万元</text>
+      </view>
+      <view class="row source-note">
+        <text></text>
+        <text class="source-text">依据：计价格[2002]10号 工程设计收费基价表</text>
+      </view>
+      <view class="row big" wx:if="{{record.calcDetail.specialtyCoef}}">
+        <text class="label">专业调整系数</text>
+        <text class="value">{{record.calcDetail.specialtyCoef}}</text>
+      </view>
+      <view class="row big" wx:if="{{record.calcDetail.complexityCoef}}">
+        <text class="label">复杂程度系数</text>
+        <text class="value">{{record.calcDetail.complexityCoef}}（{{record.calcDetail.complexityName || ''}}）</text>
+      </view>
+      <view class="row big" wx:if="{{record.calcDetail.netAdditionalCoef > 1.0}}">
+        <text class="label">附加调整系数</text>
+        <text class="value">{{record.calcDetail.netAdditionalCoef}}</text>
+      </view>
+      <view class="row big" wx:if="{{record.calcDetail.discount < 100}}">
+        <text class="label">收费比例</text>
+        <text class="value">{{record.calcDetail.discount}}%</text>
+      </view>
+      <view class="row big" wx:if="{{record.calcDetail.taxRate > 0}}">
+        <text class="label">增值税率 ({{record.calcDetail.taxRate}}%)</text>
+        <text class="value">+{{record.calcDetail.tax}} 万元</text>
+      </view>
+      <view class="row big" style="background: rgba(13, 29, 53, 0.04);">
+        <text style="font-weight: 700;">合计</text>
+        <text class="value" style="font-size: 34rpx; font-weight: 800; color: var(--ink);">{{record.calcDetail.total}} 万元</text>
+      </view>
+    </view>
+  </block>
+
+  <!-- Linear Interpolation steps -->
+  <view class="form-section" wx:if="{{record.calcDetail.interpolationDetail}}">基价内插还原 (直线内插法)</view>
+  <view class="glass form-card" wx:if="{{record.calcDetail.interpolationDetail}}" style="padding: 24rpx 32rpx; font-size: 26rpx;">
+    <view class="formula-title">计算公式:</view>
+    <view class="formula-text">{{record.calcDetail.interpolationDetail.formula}}</view>
+    <view class="divider" style="background: var(--line); height: 1rpx; margin: 16rpx 0;"></view>
+    <view class="formula-title">内插步骤说明:</view>
+    <view class="formula-steps">{{record.calcDetail.interpolationDetail.steps}}</view>
+  </view>
+
+  <!-- Action CTA buttons -->
+  <view class="actions-group">
+    <view class="actions">
+      <button class="cta" bindtap="onExportPDF">导出报价单 PDF</button>
+      <button class="cta outline" bindtap="onViewProject" wx:if="{{record.projectId}}">查看项目</button>
+      <button class="cta" bindtap="onSaveToProject" wx:else>保存到项目</button>
+    </view>
+    <button class="cta reset full-width-btn" bindtap="onBack">返回修改</button>
+  </view>
+
+  <!-- 保存到项目弹窗 -->
+  <view class="modal-overlay {{showSaveModal ? 'open' : ''}}" bindtap="closeSaveModal">
+      <view class="modal-sheet" catchtap="onPreventDefault">
+      <view class="modal-handle"></view>
+      <view class="modal-title">保存到项目</view>
+      <view class="modal-subtitle">按当前版本首页大类归档</view>
+
+      <view class="save-section-title">归档大类</view>
+      <view class="specialty-grid compact">
+        <view class="specialty-chip {{item.value === selectedSaveStage ? 'selected' : ''}}"
+              wx:for="{{saveStageCategories}}"
+              wx:key="value"
+              bindtap="onSelectSaveStage"
+              data-stage="{{item.value}}">
+          <view class="specialty-chip-text">
+            <text class="specialty-chip-name">{{item.label}}</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="modal-actions">
+        <view class="soft cancel-btn" bindtap="closeSaveModal">取消</view>
+        <view class="soft confirm-btn" bindtap="onConfirmSaveToProject">确认保存</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 修改项目名称弹窗 -->
+  <view class="modal-overlay {{showNameModal ? 'open' : ''}}" bindtap="closeNameModal">
+    <view class="modal-sheet" catchtap="onPreventDefault">
+      <view class="modal-handle"></view>
+      <view class="modal-title">修改项目名称</view>
+      <view class="modal-subtitle">用于历史记录、项目列表和计算结果展示</view>
+      <view class="form-group">
+        <text class="form-label">项目名称 *</text>
+        <input class="form-input" placeholder="请输入项目名称" value="{{editingProjectName}}" bindinput="onProjectNameInput"/>
+      </view>
+      <view class="modal-actions">
+        <view class="soft cancel-btn" bindtap="closeNameModal">取消</view>
+        <view class="soft confirm-btn" bindtap="onConfirmProjectName">保存</view>
+      </view>
+    </view>
+  </view>
+
+  <view style="height: 50rpx;"></view>
+
+  <view class="copyright">Copyright © 2026 1+H ARCH</view>
+</view>

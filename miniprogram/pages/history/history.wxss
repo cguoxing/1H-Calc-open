@@ -1,0 +1,145 @@
+/* History List */
+.history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+/* History Card */
+.history-card {
+  display: flex;
+  flex-direction: column;
+  padding: 28rpx 32rpx;
+  gap: 16rpx;
+  overflow: hidden;
+}
+
+/* Top row: Name - Date */
+.card-top {
+  display: flex;
+  align-items: baseline;
+  gap: 12rpx;
+  min-width: 0;
+}
+
+.card-top:active {
+  opacity: 0.7;
+}
+
+.record-name {
+  font-size: 28rpx;
+  font-weight: 700;
+  color: var(--ink);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+  min-width: 0;
+}
+
+.record-date {
+  font-size: 22rpx;
+  color: var(--muted);
+  flex-shrink: 0;
+  max-width: 180rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Bottom row: tags + amount + delete */
+.card-bottom {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  min-width: 0;
+}
+
+.card-tags {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.tag {
+  font-size: 20rpx;
+  padding: 4rpx 12rpx;
+  border-radius: 6rpx;
+  font-weight: 500;
+  flex-shrink: 0;
+}
+
+.tag.export-tag {
+  background: rgba(107, 114, 128, 0.08);
+  color: #6b7280;
+}
+
+.tag.export-tag.done {
+  background: rgba(34, 197, 94, 0.08);
+  color: #22c55e;
+}
+
+.tag.archive-tag {
+  background: rgba(251, 146, 60, 0.08);
+  color: #f97316;
+}
+
+.tag.archive-tag.done {
+  background: rgba(59, 130, 246, 0.08);
+  color: #3b82f6;
+}
+
+.record-amount {
+  font-size: 26rpx;
+  font-weight: 700;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* Empty status */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 100rpx 0;
+}
+
+.empty-icon {
+  font-size: 80rpx;
+  opacity: 0.6;
+  margin-bottom: 16rpx;
+}
+
+.empty-text {
+  font-size: 26rpx;
+  color: var(--muted);
+}
+
+/* Delete button */
+.delete-btn {
+  width: 48rpx;
+  height: 48rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  opacity: 0.35;
+  transition: opacity 0.2s, transform 0.15s;
+}
+
+.delete-btn:active {
+  opacity: 0.85;
+  transform: scale(0.92);
+}
+
+.delete-btn image {
+  width: 30rpx;
+  height: 30rpx;
+  display: block;
+  border: none;
+  border-radius: 0;
+}

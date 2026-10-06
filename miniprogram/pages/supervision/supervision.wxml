@@ -1,0 +1,77 @@
+<view class="container">
+  <!-- Header -->
+  <view class="appbar">
+    <view class="brand" bindtap="onGoHome">
+      <image class="logo" src="/images/logo.png" mode="aspectFit"></image>
+      <text>易计算</text>
+    </view>
+  </view>
+  <view class="hint" style="margin-top: -16rpx; margin-bottom: 28rpx; padding: 0 8rpx;">依据：发改价格[2007]670号 · 广东地区项目可结合地方服务成本和合同约定复核</view>
+
+  <!-- 1. 项目基础信息 -->
+  <view class="form-section">1. 项目基础信息</view>
+  <view class="glass form-card">
+    <view class="row big">
+      <text class="label">项目名称</text>
+      <input class="row-input" placeholder="输入名称以存入历史" bindinput="onNameInput" value="{{projectName}}" />
+    </view>
+    
+    <picker bindchange="onProfessionChange" value="{{professionIndex}}" range="{{professions}}" range-key="label">
+      <view class="row big">
+        <text class="label">专业类型</text>
+        <text class="value">{{professions[professionIndex].label}}</text>
+        <view class="chev"></view>
+      </view>
+    </picker>
+  </view>
+
+  <!-- 2. 项目规模 -->
+  <view class="form-section">2. 项目规模</view>
+  <view class="glass form-card">
+    <view class="row big">
+      <text class="label">工程概算投资额</text>
+      <input class="row-input text-right" type="digit" placeholder="输入投资额" bindinput="onCostInput" value="{{cost}}" />
+      <text class="unit">万元</text>
+    </view>
+  </view>
+
+  <!-- 3. 调整系数 -->
+  <view class="form-section">3. 调整系数</view>
+  <view class="glass form-card">
+    <picker bindchange="onElevationChange" value="{{elevationIndex}}" range="{{elevations}}" range-key="label">
+      <view class="row big">
+        <text class="label">高程调整系数</text>
+        <text class="value">{{elevations[elevationIndex].label}}</text>
+        <view class="chev"></view>
+      </view>
+    </picker>
+
+    <picker bindchange="onRatioChange" value="{{ratioIndex}}" range="{{ratios}}" range-key="label">
+      <view class="row big">
+        <text class="label">浮动幅度</text>
+        <text class="value">{{ratios[ratioIndex].label}}</text>
+        <view class="chev"></view>
+      </view>
+    </picker>
+  </view>
+
+  <!-- 4. 税率 -->
+  <view class="form-section">4. 税率</view>
+  <view class="glass form-card">
+    <picker bindchange="onTaxRateChange" value="{{taxRateIndex}}" range="{{taxRates}}" range-key="label">
+      <view class="row big">
+        <text class="label">增值税税率</text>
+        <text class="value">{{taxRates[taxRateIndex].label}}</text>
+        <view class="chev"></view>
+      </view>
+    </picker>
+  </view>
+
+  <!-- Action buttons -->
+  <view class="actions">
+    <button class="cta" bindtap="onCalculate">确认</button>
+    <button class="cta reset" bindtap="onReset">重置</button>
+  </view>
+
+  <view class="copyright">Copyright © 2026 1+H ARCH</view>
+</view>

@@ -1,0 +1,41 @@
+<view class="container">
+  <!-- Simulated AppBar -->
+  <view class="appbar">
+    <view class="brand" bindtap="onGoHome">
+      <image class="logo" src="/images/logo.png" mode="aspectFit"></image>
+      <text>易计算</text>
+    </view>
+  </view>
+
+  <!-- History Cards List -->
+  <view class="history-list">
+    <block wx:if="{{filteredRecords.length > 0}}">
+      <view class="soft history-card" wx:for="{{filteredRecords}}" wx:key="id">
+        <!-- Top row: project name only -->
+        <view class="card-top" bindtap="onViewRecord" data-id="{{item.id}}">
+          <text class="record-name">{{item.projectName || item.name}}</text>
+        </view>
+        
+        <!-- Bottom row: statuses + amount + delete -->
+        <view class="card-bottom">
+          <view class="card-tags">
+            <text class="tag export-tag {{item.isExported ? 'done' : ''}}">{{item.isExported ? '已导出' : '未导出'}}</text>
+            <text class="tag archive-tag {{item.isArchived ? 'done' : ''}}" catchtap="{{item.isArchived ? '' : 'onArchive'}}" data-id="{{item.id}}">{{item.isArchived ? '已归档' : '未归档'}}</text>
+          </view>
+          <view class="record-amount" style="color: {{item.color || '#102744'}}">{{item.amount}}</view>
+          <view class="delete-btn" catchtap="onDeleteRecord" data-id="{{item.id}}">
+            <image src="/images/trash.png" mode="aspectFit"></image>
+          </view>
+        </view>
+      </view>
+    </block>
+    <block wx:else>
+      <view class="empty-state">
+        <view class="empty-icon">📂</view>
+        <view class="empty-text">无对应计算记录</view>
+      </view>
+    </block>
+  </view>
+
+  <view class="copyright">Copyright © 2026 1+H ARCH</view>
+</view>

@@ -1,0 +1,441 @@
+/* Appbar Simulation */
+
+/* Glass Search Bar — 上下两格布局：上输入区 / 下发按钮右下 */
+.search-bar {
+  min-height: 180rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+  padding: 24rpx 28rpx 20rpx;
+  color: #8190a1;
+  font-size: 24rpx;
+  margin-bottom: 28rpx;
+}
+
+.search-input {
+  width: 100%;
+  font-size: 26rpx;
+  color: var(--ink);
+  line-height: 1.6;
+  height: auto;
+  min-height: 125rpx;
+  max-height: 240rpx;
+  padding: 4rpx 8rpx;
+  text-align: left;
+  word-break: break-all;
+  border: none !important;
+  background: transparent !important;
+  outline: none;
+  -webkit-appearance: none;
+  box-sizing: border-box;
+}
+
+.search-placeholder {
+  color: #8190a1;
+  font-size: 26rpx;
+  line-height: 1.6;
+}
+
+/* Send button — 发按钮右下 */
+.send-btn {
+  width: 72rpx;
+  height: 72rpx;
+  border-radius: 50%;
+  background: var(--blue);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  align-self: flex-end;
+  box-shadow: 0 4rpx 12rpx rgba(16, 39, 68, 0.12);
+}
+
+.send-icon {
+  width: 40rpx;
+  height: 40rpx;
+  display: block;
+  border: 0 !important;
+}
+
+/* Shortcut Grid — 3 columns with flexbox */
+.shortcut-grid {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0 -8rpx;
+  margin-bottom: 32rpx;
+}
+
+.shortcut-grid .shortcut {
+  width: calc((100% - 48rpx) / 3);
+  margin: 0 8rpx 16rpx;
+}
+
+.shortcut {
+  min-height: 156rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 16rpx 8rpx;
+  text-align: center;
+}
+
+.shortcut:active {
+  background: rgba(255,255,255,0.7);
+}
+
+.shortcut .iconbox {
+  width: 77rpx;
+  height: 77rpx;
+  margin-bottom: 10rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--icon-bg);
+  border-radius: 18rpx;
+  flex-shrink: 0;
+}
+
+.shortcut .iconbox image {
+  width: 43rpx;
+  height: 43rpx;
+  display: block;
+}
+
+.shortcut-text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.shortcut-title {
+  display: block;
+  font-size: 24rpx;
+  line-height: 1.2;
+  font-weight: 800;
+  color: var(--ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+  text-align: center;
+}
+
+.shortcut-desc {
+  display: block;
+  margin-top: 4rpx;
+  color: var(--muted);
+  font-size: 18rpx;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+  text-align: center;
+}
+
+/* Stage List Cards — flex column */
+.stage-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+}
+
+.stage-card {
+  min-height: 120rpx;
+  display: flex;
+  align-items: center;
+  gap: 32rpx;
+  padding: 18rpx 28rpx;
+}
+
+.stage-card:active {
+  background: rgba(255,255,255,0.7);
+}
+
+.stage-card .iconbox {
+  flex-shrink: 0;
+}
+
+.stage-card .iconbox image {
+  width: 44rpx;
+  height: 44rpx;
+}
+
+.stage-card-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.stage-title {
+  font-size: 24rpx;
+  font-weight: 800;
+  color: var(--ink);
+  margin-bottom: 8rpx;
+}
+
+.stage-desc {
+  color: var(--muted);
+  font-size: 22rpx;
+}
+
+.stage-card .chev {
+  flex-shrink: 0;
+}
+
+/* Stage Specialty Picker Modal */
+.modal-overlay {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 500;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.modal-overlay.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.modal-sheet {
+  width: 100%;
+  max-height: 82vh;
+  background: #ffffff;
+  border-radius: 32rpx 32rpx 0 0;
+  border-top: 1rpx solid #e2e8f0;
+  box-shadow: 0 -6rpx 24rpx rgba(0, 0, 0, 0.03);
+  padding: 32rpx 32rpx calc(48rpx + 100rpx + env(safe-area-inset-bottom));
+  transform: translateY(100%);
+  transition: transform 0.35s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-overlay.open .modal-sheet {
+  transform: translateY(0);
+}
+
+.modal-handle {
+  width: 64rpx;
+  height: 8rpx;
+  border-radius: 4rpx;
+  background: #E5E5EA;
+  margin: 0 auto 24rpx;
+  flex-shrink: 0;
+}
+
+.modal-title {
+  font-size: 28rpx;
+  font-weight: 900;
+  text-align: center;
+  margin-bottom: 6rpx;
+  color: var(--ink);
+  flex-shrink: 0;
+}
+
+.modal-subtitle {
+  font-size: 24rpx;
+  color: var(--muted);
+  text-align: center;
+  margin-bottom: 28rpx;
+  flex-shrink: 0;
+}
+
+.specialty-scroll {
+  height: 58vh;
+  max-height: calc(82vh - 150rpx - 100rpx - env(safe-area-inset-bottom));
+  min-height: 220rpx;
+  overflow: hidden;
+}
+
+.specialty-grid {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0 -8rpx;
+  padding-bottom: 32rpx;
+}
+
+.specialty-grid .specialty-chip {
+  width: calc((100% - 32rpx) / 2);
+  margin: 0 8rpx 16rpx;
+}
+
+.specialty-chip {
+  display: flex;
+  align-items: center;
+  padding: 22rpx 24rpx;
+  min-height: 92rpx;
+  border-radius: 18rpx;
+  background: #ffffff;
+  border: 1rpx solid #e8eef3;
+  box-shadow: var(--soft-shadow);
+  text-align: left;
+}
+
+.specialty-chip.selected {
+  background: rgba(16, 39, 68, 0.05);
+  border-color: #102744;
+  box-shadow: none;
+}
+
+.specialty-chip-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.specialty-chip-name {
+  font-size: 24rpx;
+  font-weight: 600;
+  color: var(--ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.specialty-chip-coef {
+  font-size: 20rpx;
+  color: var(--muted);
+  margin-top: 2rpx;
+}
+
+.stage-card-featured {
+  background: #eaeef3 !important;
+  border: 1rpx solid rgba(16, 37, 68, 0.12) !important;
+}
+
+.stage-card-featured:active {
+  background: #dbe2eb !important;
+}
+
+/* Stage header with "All" link */
+.stage-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 32rpx 0 16rpx;
+}
+
+.stage-header-title {
+  font-size: 30rpx;
+  line-height: 1.2;
+  font-weight: 900;
+  color: var(--ink);
+}
+
+.stage-header-all {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  cursor: pointer;
+  padding: 8rpx 0;
+}
+
+.all-text {
+  font-size: 24rpx;
+  color: #6e7f92;
+  font-weight: 500;
+}
+
+.chev-small {
+  width: 12rpx;
+  height: 12rpx;
+  border-right: 2.5rpx solid #6e7f92;
+  border-bottom: 2.5rpx solid #6e7f92;
+  transform: rotate(-45deg);
+  flex-shrink: 0;
+}
+
+/* Bottom Grid for Standards & Policies — 2 columns with flexbox */
+.bottom-grid {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0 -8rpx;
+  margin-top: 24rpx;
+}
+
+.bottom-grid .bottom-card {
+  width: calc((100% - 32rpx) / 2);
+  margin: 0 8rpx 16rpx;
+}
+
+.bottom-card {
+  display: flex;
+  align-items: center;
+  padding: 24rpx 20rpx;
+  gap: 16rpx;
+  position: relative;
+  min-height: 156rpx;
+}
+
+.bottom-card:active {
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.iconbox-bottom {
+  width: 72rpx;
+  height: 72rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 18rpx;
+  background: var(--icon-bg);
+  flex-shrink: 0;
+}
+
+.iconbox-bottom image {
+  width: 44rpx;
+  height: 44rpx;
+  display: block;
+  border: none !important;
+  border-radius: 0 !important;
+}
+
+.bottom-card-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.bottom-title {
+  font-size: 26rpx;
+  font-weight: 800;
+  color: var(--ink);
+  margin-bottom: 6rpx;
+}
+
+.bottom-desc {
+  color: var(--muted);
+  font-size: 20rpx;
+  line-height: 1.4;
+  word-break: break-all;
+}
+
+.chev-small-bottom {
+  width: 10rpx;
+  height: 10rpx;
+  border-right: 2.5rpx solid #6e7f92;
+  border-bottom: 2.5rpx solid #6e7f92;
+  transform: rotate(-45deg);
+  flex-shrink: 0;
+  margin-left: 8rpx;
+  align-self: center;
+}
+
+/* Clean image borders inside iconboxes */
+.iconbox image {
+  border: none !important;
+  border-radius: 0 !important;
+}

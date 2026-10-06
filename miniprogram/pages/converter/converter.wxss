@@ -1,0 +1,49 @@
+/* Simulated Header Bar Spacing */
+.appbar {
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Segments */
+/* Custom overrides for scrollable segmented control */
+.segmented {
+  padding: 12rpx 16rpx;
+}
+
+.segments {
+  border: none;
+}
+
+.segments button {
+  padding: 0 32rpx;
+}
+
+/* 输入行：数值 + 单位选择器 */
+.input-row-wrap {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.unit-picker {
+  flex-shrink: 0;
+}
+
+.unit-tag {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  padding: 8rpx 20rpx;
+  border-radius: 12rpx;
+  background: var(--blue);
+  color: #fff;
+  font-size: 26rpx;
+  font-weight: bold;
+}
+
+.unit-arrow {
+  font-size: 22rpx;
+  opacity: 0.7;
+}
+
+

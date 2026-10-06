@@ -1,0 +1,229 @@
+<view class="container">
+  <!-- Header -->
+  <view class="appbar">
+    <view class="brand" bindtap="onGoHome">
+      <image class="logo" src="/images/logo.png" mode="aspectFit"></image>
+      <text>易计算</text>
+    </view>
+  </view>
+  <view class="h1-subtitle">依据：自然资源部《全域土地综合整治实施指南（2024版）》</view>
+
+  <!-- 1. 项目基础信息 -->
+  <view class="form-section">1. 项目基础信息</view>
+  <view class="glass form-card">
+    <view class="row big">
+      <text class="label">项目名称</text>
+      <input class="row-input" placeholder="输入名称以存入历史" bindinput="onNameInput" value="{{projectName}}" />
+    </view>
+
+    <view class="row big">
+      <text class="label">工程施工费</text>
+      <input class="row-input text-right" type="digit" placeholder="输入施工费总额" bindinput="onCostInput" value="{{cost}}" />
+      <text class="unit">万元</text>
+    </view>
+  </view>
+
+  <!-- 2. 整治内容分类 -->
+  <view class="form-section">2. 整治内容分类</view>
+  <view class="glass form-card">
+    <picker bindchange="onTypeChange" value="{{typeIndex}}" range="{{types}}" range-key="name">
+      <view class="row big">
+        <text class="label">整治类型</text>
+        <text class="value">{{types[typeIndex].name}}</text>
+        <view class="chev"></view>
+      </view>
+    </picker>
+
+    <picker wx:if="{{subTypes.length > 0}}" bindchange="onSubTypeChange" value="{{subTypeIndex}}" range="{{subTypes}}" range-key="name">
+      <view class="row big">
+        <text class="label">子类型</text>
+        <text class="value">{{subTypes[subTypeIndex].name}}</text>
+        <view class="chev"></view>
+      </view>
+    </picker>
+
+    <picker bindchange="onComplexityChange" value="{{complexityIndex}}" range="{{complexityOptions}}" range-key="name">
+      <view class="row big">
+        <text class="label">工程复杂程度</text>
+        <text class="value">{{complexityOptions[complexityIndex].name}}</text>
+        <view class="chev"></view>
+      </view>
+    </picker>
+  </view>
+
+  <!-- 3. 调整系数 -->
+  <view class="form-section">3. 调整系数</view>
+  <view class="glass form-card">
+    <picker bindchange="onTerrainChange" value="{{terrainIndex}}" range="{{terrainOptions}}" range-key="name">
+      <view class="row big">
+        <text class="label">地貌类型</text>
+        <text class="value">{{terrainOptions[terrainIndex].name}}（×{{terrainOptions[terrainIndex].coef}}）</text>
+        <view class="chev"></view>
+      </view>
+    </picker>
+
+    <picker bindchange="onTownshipChange" value="{{townshipIndex}}" range="{{townshipOptions}}" range-key="name">
+      <view class="row big">
+        <text class="label">涉及乡镇</text>
+        <text class="value">{{townshipOptions[townshipIndex].name}}（×{{townshipOptions[townshipIndex].coef}}）</text>
+        <view class="chev"></view>
+      </view>
+    </picker>
+
+    <!-- 附加调整系数（多选 chips） -->
+    <view class="row-stack-title">附加调整系数（可多选）</view>
+    <view class="chip-group">
+      <view class="chip {{item.selected ? 'active' : ''}}"
+            wx:for="{{additionalOptions}}" wx:key="id"
+            wx:for-item="item"
+            bindtap="toggleAdditional" data-id="{{item.id}}">
+        <text>{{item.name}}（×{{item.coef}}）</text>
+        <image wx:if="{{item.selected}}" src="/images/check.png" class="chip-check"></image>
+      </view>
+    </view>
+  </view>
+
+  <!-- 4. 专项服务（可选叠加） -->
+  <view class="form-section">4. 专项服务（可选叠加）</view>
+  <view class="glass form-card">
+    <view class="special-list">
+      <view class="special-item {{svc.selected ? 'selected' : ''}}"
+            wx:for="{{specialServices}}" wx:key="id" wx:for-item="svc">
+        <view class="special-header">
+          <text class="special-name">{{svc.serviceName || svc.id}}</text>
+          <view style="display: flex; align-items: center; gap: 20rpx;">
+            <view class="toggle {{svc.selected ? 'active' : ''}}"
+                  bindtap="onToggleSpecialActive" data-id="{{svc.id}}"></view>
+            <view class="remove-svc-btn" bindtap="onRemoveSpecialService" data-id="{{svc.id}}" style="padding: 10rpx; margin-right: -10rpx; display: flex; align-items: center;">
+              <image src="/images/trash.png" style="width: 28rpx; height: 28rpx; opacity: 0.35; display: block;"></image>
+            </view>
+          </view>
+        </view>
+        <view class="special-params" wx:if="{{svc.selected}}">
+          <view class="param-row" wx:if="{{svc.id === 'plan_compilation' || svc.id === 'farmland_design' || svc.id === 'construction_reclaim' || svc.id === 'mine_restore_design' || svc.id === 'completion_survey'}}">
+            <text class="param-label">面积</text>
+            <input class="param-input" type="digit" placeholder="输入面积" data-id="{{svc.id}}" data-field="area" bindinput="onSpecialParamInput" value="{{svc.area}}" />
+            <text class="param-unit">亩/km²</text>
+          </view>
+          <view class="param-row" wx:if="{{svc.id === 'village_layout'}}">
+            <text class="param-label">村庄数</text>
+            <input class="param-input" type="number" placeholder="输入村数" data-id="{{svc.id}}" data-field="villageCount" bindinput="onSpecialParamInput" value="{{svc.villageCount}}" />
+            <text class="param-unit">个</text>
+          </view>
+          <view class="param-row" wx:if="{{svc.id === 'whole_process'}}">
+            <text class="param-label">总投资</text>
+            <input class="param-input" type="digit" placeholder="输入总投资" data-id="{{svc.id}}" data-field="investment" bindinput="onSpecialParamInput" value="{{svc.investment}}" />
+            <text class="param-unit">万元</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <button class="add-special-btn" bindtap="onOpenSpecialModal">+ 添加专项服务</button>
+  </view>
+
+  <!-- 5. 收费与税率 -->
+  <view class="form-section">5. 收费比例与税率</view>
+  <view class="glass form-card">
+    <view class="row big">
+      <text class="label">总收费比例</text>
+      <input class="row-input text-right" type="digit" placeholder="100" bindinput="onDiscountInput" value="{{discount}}" />
+      <text class="unit">%</text>
+    </view>
+    <view class="row big">
+      <text class="label">增值税率</text>
+      <input class="row-input text-right" type="digit" placeholder="6" bindinput="onTaxRateInput" value="{{taxRate}}" />
+      <text class="unit">%</text>
+    </view>
+  </view>
+
+  <!-- 计算按钮 -->
+  <button class="cta" bindtap="onCalculate">开始计算</button>
+
+  <!-- 计算结果 -->
+  <block wx:if="{{resultVisible && result}}">
+    <view class="result-card" style="background: linear-gradient(135deg, #2E7D32, rgba(27, 94, 32, 0.85));">
+      <view class="result-label">全域土地综合整治设计服务成本</view>
+      <view class="result-value">¥ {{result.grandTotal}} 万</view>
+      <view class="result-subtitle">施工费 {{result.cost}} 万元 · 调整系数 {{result.adjustmentCoef}}</view>
+    </view>
+
+    <!-- 费用明细 -->
+    <view class="form-section">费用明细</view>
+    <view class="glass form-card">
+      <view class="row big">
+        <text class="label">工程施工费</text>
+        <text class="value">{{result.cost}} 万元</text>
+      </view>
+      <view class="row big">
+        <text class="label">项目勘测费</text>
+        <text class="value">{{result.surveyFee}} 万元</text>
+      </view>
+      <view class="row big">
+        <text class="label">勘测费率</text>
+        <text class="value">{{result.surveyRate * 100}}% × 地貌 {{result.terrainCoef}}</text>
+      </view>
+      <view class="row big">
+        <text class="label">项目设计与预算编制费</text>
+        <text class="value">{{result.designFee}} 万元</text>
+      </view>
+      <view class="row big">
+        <text class="label">设计费率</text>
+        <text class="value">{{result.designRate * 100}}% × 调整系数 {{result.adjustmentCoef}}</text>
+      </view>
+
+      <!-- 系数明细 -->
+      <view class="row big" style="background: rgba(46, 125, 50, 0.04);">
+        <text class="label">调整系数构成</text>
+        <text class="value">地貌 {{result.terrainCoef}} × 乡镇 {{result.townshipCoef}} × 规模 {{result.scaleCoef}}</text>
+      </view>
+
+      <view class="row big" wx:if="{{result.additionalDetails.length > 0}}" wx:for="{{result.additionalDetails}}" wx:key="name">
+        <text class="label">{{item.name}}</text>
+        <text class="value">×{{item.coef}}</text>
+      </view>
+
+      <!-- 专项服务叠加 -->
+      <block wx:if="{{result.specialFees.length > 0}}">
+        <view class="row-divider"></view>
+        <view class="row big" wx:for="{{result.specialFees}}" wx:key="serviceId">
+          <text class="label">{{item.serviceName}}</text>
+          <text class="value">+{{item.fee}} 万元</text>
+        </view>
+      </block>
+
+      <view class="row big" wx:if="{{result.discount < 100}}">
+        <text class="label">总收费比例</text>
+        <text class="value">{{result.discount}}%</text>
+      </view>
+      <view class="row big" wx:if="{{result.taxRate > 0}}">
+        <text class="label">增值税率 ({{result.taxRate}}%)</text>
+        <text class="value">+{{result.tax}} 万元</text>
+      </view>
+      <view class="row big" style="background: rgba(46, 125, 50, 0.08);">
+        <text style="font-weight: 700;">合计</text>
+        <text class="value" style="font-size: 34rpx; font-weight: 800; color: #102744;">{{result.grandTotal}} 万元</text>
+      </view>
+    </view>
+  </block>
+
+  <!-- 专项服务选择弹窗 -->
+  <view class="modal-overlay {{showSpecialModal ? 'open' : ''}}" bindtap="onCloseSpecialModal">
+    <view class="modal-sheet" catchtap="">
+      <view class="modal-handle"></view>
+      <view class="modal-title">添加专项服务</view>
+      <scroll-view scroll-y class="specialty-scroll">
+        <view class="special-service-option"
+              wx:for="{{allSpecialServices}}" wx:key="id"
+              wx:for-item="svc"
+              bindtap="toggleSpecialService" data-id="{{svc.id}}">
+          <text>{{svc.name}}</text>
+          <image src="/images/plus.png" class="add-icon"></image>
+        </view>
+      </scroll-view>
+    </view>
+  </view>
+
+  <view style="height: 80rpx;"></view>
+  <view class="copyright">Copyright © 2026 1+H ARCH</view>
+</view>

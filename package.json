@@ -1,0 +1,18 @@
+{
+  "name": "yicalc",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "check": "npm run check:syntax && npm run check:json && npm run check:wxss && npm run check:consistency && npm run test:calc && npm run test:phase2 && npm run test:pages && npm run test:integrity && npm run test:pdf",
+    "check:syntax": "find miniprogram cloudfunctions -name '*.js' -type f -print0 | xargs -0 -n 1 node --check",
+    "check:json": "find miniprogram -name '*.json' -type f -print0 | xargs -0 -n 1 node -e \"const fs=require('fs'); JSON.parse(fs.readFileSync(process.argv[1], 'utf8'));\"",
+    "check:wxss": "node test-wxss.js",
+    "check:consistency": "node test-project-consistency.js",
+    "test:calc": "node test-calc.js",
+    "test:phase2": "node test-phase2.js",
+    "test:pages": "node test-pages.js",
+    "test:integrity": "node test-integrity.js",
+    "test:pdf": "node test-pdf-format.js",
+    "test": "npm run check"
+  }
+}

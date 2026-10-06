@@ -1,0 +1,154 @@
+<view class="container">
+  <view class="appbar">
+    <view class="brand" bindtap="onGoHome">
+      <view class="back-btn" catchtap="onBack">
+        <image src="/images/back.png"></image>
+      </view>
+      <image class="logo" src="/images/logo.png" mode="aspectFit"></image>
+      <text>易计算</text>
+    </view>
+  </view>
+
+  <!-- Project Selector Mode -->
+  <block wx:if="{{showProjectSelector}}">
+    <view class="h2">选择对比项目</view>
+    <scroll-view scroll-y class="project-selector-scroll">
+      <view wx:if="{{projectList.length > 0}}" class="project-selector-list">
+        <view class="soft project-select-card" 
+              wx:for="{{projectList}}" 
+              wx:key="id" 
+              bindtap="onSelectProject" 
+              data-id="{{item.id}}">
+          <view class="project-select-info">
+            <text class="project-select-name">{{item.name}}</text>
+            <text class="project-select-meta" wx:if="{{item.location || item.totalInvestment}}">{{item.location || '未知地点'}} · 投资{{item.totalInvestment}}万</text>
+            <text class="project-select-count">{{item.itemCount}} 个计算子项</text>
+          </view>
+          <view class="project-select-fee-box">
+            <text class="project-select-fee-label">费用总计</text>
+            <text class="project-select-fee">¥{{item.totalFee.toFixed(2)}}万</text>
+          </view>
+        </view>
+      </view>
+      
+      <!-- Empty State inside selector -->
+      <view wx:else class="empty-state">
+        <image class="empty-icon" src="/images/empty.png"></image>
+        <text class="empty-title">暂无项目记录</text>
+        <text class="empty-desc">请先前往计算并保存至项目，再进行方案比选。</text>
+        <button class="empty-btn" bindtap="onBack" style="margin-top: 32rpx; background: var(--blue); color: #fff; font-size: 26rpx; border-radius: 20rpx; padding: 16rpx 48rpx;">返回主页</button>
+      </view>
+    </scroll-view>
+  </block>
+
+  <!-- Comparison Mode -->
+  <block wx:else>
+    <!-- 项目信息 -->
+    <view class="soft project-header-card">
+      <view class="project-header-left">
+        <text class="project-compare-name">{{project.name}}</text>
+        <text class="project-compare-desc">{{items.length}} 个子项 · 选中 {{selectedItems.length}} 个对比</text>
+      </view>
+      <view class="switch-project-btn" bindtap="onSwitchProject">
+        <text>切换项目</text>
+      </view>
+    </view>
+
+    <!-- 操作栏 -->
+    <view class="compare-toolbar">
+      <view class="soft toggle-all-btn" bindtap="onToggleAll">
+        <text>{{selectedItems.length === items.length ? '取消全选' : '全选'}}</text>
+      </view>
+      <text class="selected-count">已选 {{selectedItems.length}}/{{items.length}} 项</text>
+    </view>
+
+    <!-- 子项选择列表 -->
+    <scroll-view scroll-y class="compare-item-list">
+      <view class="soft compare-item {{item.selected ? 'active' : ''}}" 
+            wx:for="{{items}}" 
+            wx:key="id" 
+            bindtap="onToggleItem" 
+            data-id="{{item.id}}">
+        <view class="compare-checkbox {{item.selected ? 'checked' : ''}}">
+          <image wx:if="{{item.selected}}" src="/images/check.png"></image>
+        </view>
+        <view class="compare-item-info">
+          <text class="compare-item-name">{{item.name}}</text>
+          <text class="compare-item-stage" style="color: {{item.stageColor}}">{{item.stageName}}</text>
+        </view>
+        <text class="compare-item-total">¥{{item.total}}万</text>
+      </view>
+    </scroll-view>
+
+    <!-- 对比统计 -->
+    <view wx:if="{{stats.count >= 2}}" class="compare-stats-section">
+      <view class="h2">对比统计</view>
+      <view class="glass stats-grid">
+        <view class="stat-card">
+          <text class="stat-num">{{stats.min.toFixed(2)}}</text>
+          <text class="stat-label">最低费用 (万)</text>
+        </view>
+        <view class="stat-card">
+          <text class="stat-num">{{stats.max.toFixed(2)}}</text>
+          <text class="stat-label">最高费用 (万)</text>
+        </view>
+        <view class="stat-card">
+          <text class="stat-num">{{stats.avg.toFixed(2)}}</text>
+          <text class="stat-label">平均费用 (万)</text>
+        </view>
+        <view class="stat-card">
+          <text class="stat-num">{{stats.diff.toFixed(2)}}</text>
+          <text class="stat-label">极差 (万)</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 对比图表 -->
+    <view wx:if="{{chartData.length >= 2}}" class="compare-chart-section">
+      <view class="h2">费用对比 (万元)</view>
+      <view class="glass chart-container">
+        <view class="chart-bar-row" wx:for="{{chartData}}" wx:key="id" wx:for-item="bar">
+          <view class="chart-label">
+            <text class="chart-name">{{bar.name}}</text>
+            <text class="chart-stage" style="color: {{bar.stageColor}}">{{bar.stageName}}</text>
+          </view>
+          <view class="chart-bar-wrap">
+            <view class="chart-bar" style="width: {{bar.barWidth}}%; background: {{bar.stageColor}};"></view>
+            <text class="chart-value">{{bar.total.toFixed(2)}}万</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 对比详情表 -->
+    <view wx:if="{{chartData.length >= 2}}" class="compare-table-section">
+      <view class="h2">详细对比</view>
+      <view class="glass compare-table">
+        <!-- 表头 -->
+        <view class="table-header-row">
+          <text class="table-cell header name-col">方案名称</text>
+          <text class="table-cell header num-col">总费用</text>
+          <text class="table-cell header num-col">计费额</text>
+          <text class="table-cell header num-col">基价</text>
+        </view>
+        <!-- 数据行 -->
+        <view class="table-data-row" wx:for="{{chartData}}" wx:key="id" wx:for-item="row">
+          <text class="table-cell name-col">{{row.name}}</text>
+          <text class="table-cell num-col highlight" style="color: {{row.stageColor}}">{{row.total.toFixed(2)}}万</text>
+          <text class="table-cell num-col">{{row.cost || '-'}}万</text>
+          <text class="table-cell num-col">{{row.basePrice || '-'}}万</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 空状态：少于2项 -->
+    <view wx:if="{{chartData.length < 2}}" class="empty-state">
+      <image class="empty-icon" src="/images/empty.png"></image>
+      <text class="empty-title">请至少选择 2 项进行对比</text>
+      <text class="empty-desc">在列表中勾选需要对比的计算子项</text>
+    </view>
+  </block>
+
+  <view style="height: 50rpx;"></view>
+  <view class="copyright">Copyright © 2026 1+H ARCH</view>
+</view>

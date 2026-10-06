@@ -1,0 +1,155 @@
+<view class="container">
+  <view class="appbar">
+    <view class="brand" bindtap="onGoHome">
+      <view class="back-btn" catchtap="onBack">
+        <image src="/images/back.png"></image>
+      </view>
+      <image class="logo" src="/images/logo.png" mode="aspectFit"></image>
+      <text>易计算</text>
+    </view>
+  </view>
+
+  <!-- 项目概览 -->
+  <view class="soft project-overview">
+    <view class="project-name-row">
+      <view class="project-name-text">
+        <text class="project-name-label">项目名称</text>
+        <text class="project-name-value">{{project.name || '未命名项目'}}</text>
+      </view>
+      <view class="edit-name-btn" bindtap="onEditProjectDetails">修改</view>
+    </view>
+    <view class="overview-row" wx:if="{{project.location}}">
+      <image class="overview-icon" src="/images/location.png"></image>
+      <text>{{project.location}}</text>
+    </view>
+    <view class="overview-row" wx:if="{{project.description}}">
+      <image class="overview-icon" src="/images/folder.png"></image>
+      <text>{{project.description}}</text>
+    </view>
+    <view class="overview-total">
+      <text class="total-label">项目取费总计</text>
+      <text class="total-value">{{totalFee}} 万元</text>
+    </view>
+    <view class="overview-stats">
+      <text>{{stageCount}} 个阶段 · {{itemCount}} 个子项</text>
+      <text wx:if="{{project.totalInvestment}}">总投资 {{project.totalInvestment}} 万元</text>
+    </view>
+    <!-- 方案对比入口 -->
+    <view class="compare-entry" bindtap="onCompare" wx:if="{{itemCount >= 2}}">
+      <image class="compare-icon" src="/images/expand.png"></image>
+      <text>多方案对比</text>
+      <view class="chev"></view>
+    </view>
+  </view>
+
+  <!-- 阶段和子项列表 -->
+  <view class="h2">工程阶段</view>
+
+  <view wx:if="{{project.stages.length === 0}}" class="empty-hint">
+    <text>暂未添加任何阶段和计算子项</text>
+  </view>
+
+  <view wx:for="{{project.stages}}" wx:key="id" wx:for-item="stage" class="stage-section">
+    <!-- 阶段标题 -->
+    <view class="stage-header">
+      <view class="stage-title-row">
+        <view class="stage-dot" style="background: {{stageColors[stage.id]}}"></view>
+        <text class="stage-name">{{stage.name}}</text>
+        <text class="stage-count">{{stage.items.length}}项</text>
+      </view>
+      <view class="add-item-btn" bindtap="onAddCalcItem" data-stage="{{stage.id}}">
+        <image src="/images/plus.png"></image>
+        <text>添加计算</text>
+      </view>
+    </view>
+
+    <!-- 子项列表 -->
+    <view class="item-list">
+      <view class="soft item-card" wx:for="{{stage.items}}" wx:key="id" wx:for-item="item" bindtap="onViewItem" data-item-id="{{item.id}}" data-stage="{{stage.id}}">
+        <view class="item-info">
+          <text class="item-name">{{item.name || item.createdAt}}</text>
+          <text class="item-date">{{item.quoteStatus === 'pending' ? '待报价' : item.createdAt}}</text>
+        </view>
+        <view class="item-amount {{item.quoteStatus === 'pending' ? 'pending' : ''}}">
+          {{item.quoteStatus === 'pending' ? '去报价' : ((item.calcResult && item.calcResult.total) ? item.calcResult.total + '万' : '查看')}}
+        </view>
+        <view class="item-edit" catchtap="onEditItem" data-item-id="{{item.id}}" data-stage="{{stage.id}}">
+          <text>{{item.quoteStatus === 'pending' ? '填写' : '修改'}}</text>
+        </view>
+        <view class="item-chev">
+          <image src="/images/chevron.png"></image>
+        </view>
+        <view class="item-delete" catchtap="onDeleteItem" data-item-id="{{item.id}}" data-stage="{{stage.id}}">
+          <image src="/images/trash.png"></image>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 添加计算弹窗 -->
+  <view class="modal-overlay {{showAddModal ? 'open' : ''}}" bindtap="closeAddModal">
+    <view class="modal-sheet" catchtap="onPreventDefault">
+      <view class="modal-handle"></view>
+      <view class="modal-title">添加计算子项</view>
+      <view class="modal-subtitle">选择专业方向，进入计算器</view>
+
+      <scroll-view scroll-y class="specialty-scroll">
+        <view class="specialty-grid">
+          <view class="specialty-chip" 
+                wx:for="{{currentSpecialties}}" 
+                wx:key="id" 
+                bindtap="onSelectSpecialty" 
+                data-specialty="{{item.id}}">
+            <view class="specialty-chip-icon">
+              <image src="/images/compass.png"></image>
+            </view>
+            <view class="specialty-chip-text">
+              <text class="specialty-chip-name">{{item.name}}</text>
+              <text class="specialty-chip-coef">收费计算</text>
+            </view>
+          </view>
+        </view>
+      </scroll-view>
+    </view>
+  </view>
+
+  <!-- 编辑项目详情弹窗 -->
+  <view class="modal-overlay {{showEditModal ? 'open' : ''}}" bindtap="closeEditModal">
+    <view class="modal-sheet" catchtap="onPreventDefault">
+      <view class="modal-handle"></view>
+      <view class="modal-title">编辑项目详情</view>
+      <view class="modal-subtitle">修改项目基本信息</view>
+      
+      <view class="form-group">
+        <text class="form-label">项目名称 *</text>
+        <input class="form-input" placeholder="请输入项目名称" value="{{editFormName}}" bindinput="onEditFormNameInput"/>
+      </view>
+
+      <view class="form-group">
+        <text class="form-label">项目地点</text>
+        <input class="form-input" placeholder="例如：深圳市南山区" value="{{editFormLocation}}" bindinput="onEditFormLocationInput"/>
+      </view>
+
+      <view class="form-group">
+        <text class="form-label">项目描述</text>
+        <textarea class="form-textarea" placeholder="简要描述项目范围和目标..." value="{{editFormDesc}}" bindinput="onEditFormDescInput"/>
+      </view>
+
+      <view class="form-group">
+        <text class="form-label">总投资额（万元）</text>
+        <input class="form-input" type="digit" placeholder="例如：5000" value="{{editFormInvestment}}" bindinput="onEditFormInvestmentInput"/>
+      </view>
+
+      <view class="modal-actions">
+        <view class="soft cancel-btn" bindtap="closeEditModal">取消</view>
+        <view class="soft confirm-btn" bindtap="onConfirmEditProject">保存修改</view>
+      </view>
+
+      <view class="danger-zone">
+        <view class="delete-project-btn" bindtap="onDeleteProject">删除该项目</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="copyright">Copyright © 2026 1+H ARCH</view>
+</view>

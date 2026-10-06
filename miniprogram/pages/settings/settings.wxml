@@ -1,0 +1,203 @@
+<view class="container">
+  <!-- WeChat-style AppBar simulated -->
+  <view class="appbar">
+    <view class="brand" bindtap="onGoHome">
+      <image class="logo" src="/images/logo.png" mode="aspectFit"></image>
+      <text>易计算</text>
+    </view>
+  </view>
+
+  <view class="glass settings-card">
+    <view class="card-header">
+      <text class="card-title">用户中心</text>
+      <view class="chip" bindtap="onTapChip">
+        <image class="chip-icon-diamond" src="/images/diamond{{serviceActive ? '-active' : ''}}.svg" mode="aspectFit"></image>
+        <text class="chip-text">Lv.{{serviceLevel}}｜计算服务次数：{{usageCount}}</text>
+      </view>
+    </view>
+    <view class="user-row" bindtap="onTapUserCenter">
+      <view class="avatar">{{profileInitial}}</view>
+      <view class="user-info">
+        <view class="user-info-row">
+          <image class="user-info-icon name-icon" src="/images/profile-user.svg" mode="aspectFit"></image>
+          <text class="user-name">{{profileName}}</text>
+        </view>
+        <view class="user-info-row">
+          <image class="user-info-icon phone-icon" src="/images/profile-phone.svg" mode="aspectFit"></image>
+          <text class="user-phone">{{profilePhone || '未设置'}}</text>
+        </view>
+      </view>
+      <view class="chev"></view>
+    </view>
+    <view class="order-row" bindtap="onTapOrders">
+      <view class="iconbox">
+        <image src="/images/settings-order.svg" mode="aspectFit"></image>
+      </view>
+      <text class="row-label">用户订单历史</text>
+      <view class="chev"></view>
+    </view>
+  </view>
+
+  <!-- Function Settings Card -->
+  <view class="glass settings-card">
+    <view class="card-title">功能设置</view>
+
+    <view class="setting-row" bindtap="onTapEditionSettings">
+      <view class="iconbox">
+        <image src="/images/settings-plus.svg" mode="aspectFit"></image>
+      </view>
+      <text class="row-label">选用版本</text>
+      <text class="value">{{editionName}}</text>
+      <view class="chev"></view>
+    </view>
+    
+    <view class="setting-row" bindtap="onTapUnitSettings">
+      <view class="iconbox">
+        <image src="/images/settings-expand.svg" mode="aspectFit"></image>
+      </view>
+      <text class="row-label">设置单位和有效位数</text>
+      <text class="value">{{unit}}/精确到{{precision}}位</text>
+      <view class="chev"></view>
+    </view>
+
+    <view class="setting-row" bindtap="onTapCheckUpdate">
+      <view class="iconbox">
+        <image src="/images/settings-refresh.svg" mode="aspectFit"></image>
+      </view>
+      <text class="row-label">检查更新</text>
+      <text class="value">v{{version}}</text>
+      <view class="chev"></view>
+    </view>
+
+    <view class="setting-row" bindtap="onTapExportData">
+      <view class="iconbox">
+        <image src="/images/settings-doc.svg" mode="aspectFit"></image>
+      </view>
+      <text class="row-label">导出项目列表PDF</text>
+      <text class="value">{{historyCount}}条·{{projectCount}}项目</text>
+      <view class="chev"></view>
+    </view>
+
+    <view class="setting-row" bindtap="onTapAccountSettings">
+      <view class="iconbox">
+        <image src="/images/profile-user.svg" mode="aspectFit"></image>
+      </view>
+      <text class="row-label">账户与数据备份</text>
+      <view class="chev"></view>
+    </view>
+
+    <view class="setting-row" bindtap="onTapClearCache">
+      <view class="iconbox">
+        <image src="/images/settings-trash.svg" mode="aspectFit"></image>
+      </view>
+      <text class="row-label">清除缓存数据</text>
+      <text class="value">{{storageSize}}</text>
+      <view class="chev"></view>
+    </view>
+  </view>
+
+  <!-- Help & Feedback Card -->
+  <view class="glass settings-card">
+    <view class="card-title">帮助与反馈</view>
+
+    <view class="setting-row" bindtap="onTapContactUs">
+      <view class="iconbox">
+        <image src="/images/settings-headset.svg" mode="aspectFit"></image>
+      </view>
+      <text class="row-label">联系我们</text>
+      <text class="value"></text>
+      <view class="chev"></view>
+    </view>
+
+    <view class="setting-row" bindtap="onTapFeedback">
+      <view class="iconbox">
+        <image src="/images/settings-message.svg" mode="aspectFit"></image>
+      </view>
+      <text class="row-label">问题反馈</text>
+      <text class="value"></text>
+      <view class="chev"></view>
+    </view>
+
+    <view class="setting-row" bindtap="onTapAbout">
+      <view class="iconbox">
+        <image src="/images/tool-about.svg" mode="aspectFit"></image>
+      </view>
+      <text class="row-label">关于易计算</text>
+      <text class="value">v{{version}}</text>
+      <view class="chev"></view>
+    </view>
+  </view>
+
+  <!-- More Tools Card -->
+  <view class="glass settings-card">
+    <view class="card-title">更多工具推荐｜关注我们</view>
+    <view class="setting-row" bindtap="onTapArchTools">
+      <view class="iconbox">
+        <image src="/images/tool-archbox.svg" mode="aspectFit"></image>
+      </view>
+      <text class="row-label">1+H ARCH 工具箱</text>
+      <text class="value">敬请期待</text>
+      <view class="chev"></view>
+    </view>
+
+    <!-- 社交媒体链接 -->
+    <view class="social-links-container">
+      <view class="social-icons">
+        <view class="social-item" bindtap="onTapSocial" data-platform="wechat">
+          <image class="social-icon" src="/images/social-wechat.svg" mode="aspectFit"></image>
+        </view>
+        <view class="social-item" bindtap="onTapSocial" data-platform="xiaohongshu">
+          <image class="social-icon" src="/images/social-xhs.svg" mode="aspectFit"></image>
+        </view>
+        <view class="social-item" bindtap="onTapSocial" data-platform="weibo">
+          <image class="social-icon" src="/images/social-weibo.svg" mode="aspectFit"></image>
+        </view>
+        <view class="social-item" bindtap="onTapSocial" data-platform="instagram">
+          <image class="social-icon" src="/images/social-instagram.svg" mode="aspectFit"></image>
+        </view>
+        <view class="social-item" bindtap="onTapSocial" data-platform="facebook">
+          <image class="social-icon" src="/images/social-facebook.svg" mode="aspectFit"></image>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="copyright">Copyright © 2026 1+H ARCH</view>
+
+  <!-- 用户信息编辑面板 -->
+  <view class="profile-edit-mask" wx:if="{{showProfileEdit}}" bindtap="onCloseProfileEdit"></view>
+  <view class="profile-edit-panel" wx:if="{{showProfileEdit}}">
+    <view class="pe-header">
+      <text class="pe-title">编辑个人信息</text>
+      <view class="pe-close" bindtap="onCloseProfileEdit">
+        <text>✕</text>
+      </view>
+    </view>
+
+    <scroll-view class="pe-scroll" scroll-y enhanced show-scrollbar="{{false}}">
+      <!-- 头像区域 -->
+      <view class="pe-avatar-section">
+        <view class="pe-avatar-text">{{editInitial}}</view>
+        <text class="pe-avatar-hint">头像将自动显示用户名首字母</text>
+      </view>
+
+      <!-- 用户名 -->
+      <view class="pe-field">
+        <text class="pe-label">用户名</text>
+        <input class="pe-input" placeholder="请输入用户名" value="{{editName}}" bindinput="onNameInput" maxlength="20"/>
+      </view>
+
+      <!-- 联系电话 -->
+      <view class="pe-field">
+        <text class="pe-label">联系电话</text>
+        <input class="pe-input" type="number" placeholder="请输入联系电话" value="{{editPhone}}" bindinput="onPhoneInput" maxlength="11"/>
+      </view>
+    </scroll-view>
+
+    <!-- 操作按钮（固定底部） -->
+    <view class="pe-actions">
+      <button class="pe-btn pe-cancel" bindtap="onCloseProfileEdit">取消</button>
+      <button class="pe-btn pe-save" bindtap="onSaveProfile">保存</button>
+    </view>
+  </view>
+</view>

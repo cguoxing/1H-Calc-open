@@ -1,0 +1,144 @@
+<view class="container">
+  <view class="appbar">
+    <view class="brand" bindtap="onGoHome">
+      <view class="back-btn" catchtap="onBack">
+        <image src="/images/back.png"></image>
+      </view>
+      <image class="logo" src="/images/logo.png" mode="aspectFit"></image>
+      <text>易计算</text>
+    </view>
+  </view>
+  <view class="h2-desc">预设阶段和取费类型，快速创建标准化项目</view>
+
+  <!-- 模板卡片网格 -->
+  <view class="template-grid">
+    <view class="soft template-card" 
+          wx:for="{{templates}}" 
+          wx:key="id" 
+          bindtap="onSelectTemplate" 
+          data-id="{{item.id}}"
+          style="border-left: 6rpx solid {{item.color}}">
+      
+      <view class="template-header">
+        <image class="template-icon-img" wx:if="{{item.iconImage}}" src="/images/{{item.iconImage}}.svg" mode="aspectFit"></image>
+        <text class="template-icon" wx:else>{{item.icon}}</text>
+        <view class="template-title-row">
+          <text class="template-name">{{item.name}}</text>
+          <text class="template-desc">{{item.desc}}</text>
+        </view>
+      </view>
+
+      <view class="template-meta">
+        <text class="template-stages" wx:if="{{item.stages.length > 0}}">
+          预设 {{item.stages.length}} 个阶段
+        </text>
+        <text class="template-stages empty" wx:else>
+          完全自定义
+        </text>
+        <text class="template-investment" wx:if="{{item.investment > 0}}">
+          建议投资 {{item.investment}} 万
+        </text>
+      </view>
+
+      <!-- 阶段标签 -->
+      <view class="template-stage-tags" wx:if="{{item.stages.length > 0}}">
+        <view class="stage-tag" wx:for="{{item.stages}}" wx:key="code" wx:for-item="s" style="background: {{item.color}}15; color: {{item.color}}">
+          {{s.label || '阶段'}}
+        </view>
+      </view>
+
+      <view class="template-arrow">
+        <image src="/images/chevron.png"></image>
+      </view>
+    </view>
+  </view>
+
+  <!-- 确认创建弹窗 -->
+  <view class="modal-overlay {{showConfirmModal ? 'open' : ''}}" bindtap="closeConfirmModal">
+    <view class="modal-sheet" catchtap="onPreventDefault">
+      <view class="modal-handle"></view>
+      <view class="modal-title">
+        <image class="template-icon-img" wx:if="{{selectedTemplate.iconImage}}" src="/images/{{selectedTemplate.iconImage}}.svg" mode="aspectFit" style="width:36rpx;height:36rpx;vertical-align:middle;margin-right:8rpx;display:inline-block;"></image>
+        <text wx:else class="template-icon">{{selectedTemplate.icon}}</text>
+        {{selectedTemplate.name}}
+      </view>
+      <view class="modal-subtitle">{{selectedTemplate.desc}}</view>
+
+      <view class="form-group">
+        <text class="form-label">项目名称 *</text>
+        <input class="form-input" placeholder="输入项目名称" value="{{confirmName}}" bindinput="onNameInput"/>
+      </view>
+
+      <view class="form-group">
+        <text class="form-label">项目地点</text>
+        <input class="form-input" placeholder="例如：深圳市南山区" value="{{confirmLocation}}" bindinput="onLocationInput"/>
+      </view>
+
+      <view class="form-group">
+        <text class="form-label">总投资额（万元）</text>
+        <input class="form-input" type="digit" placeholder="例如：50000" value="{{confirmInvestment}}" bindinput="onInvestmentInput"/>
+      </view>
+
+      <view class="template-preset-info">
+        <view class="preset-head">
+          <text class="preset-label">预设阶段：</text>
+          <text class="preset-stage-title">已选报价</text>
+        </view>
+        <view class="preset-group" wx:for="{{selectedPresetGroups}}" wx:key="code" wx:for-item="group" wx:for-index="groupIndex">
+          <view class="preset-tags">
+            <text class="preset-empty" wx:if="{{group.specialties.length === 0}}">点击 + 选择工程类别专业</text>
+            <text class="preset-tag selected"
+                  wx:for="{{group.specialties}}"
+                  wx:key="id"
+                  data-group-index="{{groupIndex}}"
+                  data-specialty-index="{{index}}"
+                  bindtap="onRemovePresetSpecialty">
+              {{item.name}}
+            </text>
+            <view class="preset-add-btn" data-group-index="{{groupIndex}}" bindtap="onOpenSpecialtyPicker">＋</view>
+          </view>
+        </view>
+      </view>
+
+      <view class="modal-actions">
+        <view class="soft cancel-btn" bindtap="closeConfirmModal">取消</view>
+        <view class="soft confirm-btn" bindtap="onConfirmCreate">创建项目</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 专业选择弹窗 -->
+  <view class="modal-overlay {{showSpecialtyPicker ? 'open' : ''}}" bindtap="closeSpecialtyPicker">
+    <view class="modal-sheet picker-sheet" catchtap="onPreventDefault">
+      <view class="modal-handle"></view>
+      <view class="modal-title">选择类别专业</view>
+      <view class="modal-subtitle">可包含全工程类别，选中后生成独立报价</view>
+
+      <scroll-view scroll-y class="picker-scroll">
+        <view class="picker-category" wx:for="{{pickerCategories}}" wx:key="title" wx:for-item="category" wx:for-index="catIndex">
+          <text class="picker-category-title">{{category.title}}</text>
+          <view class="picker-options">
+            <view class="picker-option {{option.selected ? 'selected' : ''}}"
+                  wx:for="{{category.options}}"
+                  wx:key="id"
+                  wx:for-item="option"
+                  wx:for-index="optionIndex"
+                  data-cat-index="{{catIndex}}"
+                  data-option-index="{{optionIndex}}"
+                  bindtap="onTogglePickerSpecialty">
+              <text>{{option.name}}</text>
+            </view>
+          </view>
+        </view>
+      </scroll-view>
+
+      <view class="modal-actions">
+        <view class="soft cancel-btn" bindtap="closeSpecialtyPicker">取消</view>
+        <view class="soft confirm-btn" bindtap="onConfirmSpecialtyPicker">确定</view>
+      </view>
+    </view>
+  </view>
+
+  <view style="height: 50rpx;"></view>
+  <view class="copyright">Copyright © 2026 1+H ARCH</view>
+</view>

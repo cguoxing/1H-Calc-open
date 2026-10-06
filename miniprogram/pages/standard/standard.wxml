@@ -1,0 +1,23 @@
+<view class="container">
+  <!-- Simulated AppBar -->
+  <view class="appbar">
+    <view class="brand" bindtap="onGoHome">
+      <image class="logo" src="/images/logo.png" mode="aspectFit"></image>
+      <text>易计算</text>
+    </view>
+  </view>
+
+  <view class="standard-list">
+    <view class="soft standard-item" wx:for="{{clauses}}" wx:key="id">
+      <view class="item-header" bindtap="onToggle" data-id="{{item.id}}">
+        <text class="item-title">{{item.title}}</text>
+        <text class="item-toggle">{{expandedId === item.id ? '▲' : '▼'}}</text>
+      </view>
+      <view class="item-content" wx:if="{{expandedId === item.id}}">
+        <text>{{item.content}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="copyright">Copyright © 2026 1+H ARCH</view>
+</view>

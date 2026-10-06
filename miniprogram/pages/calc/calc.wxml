@@ -1,0 +1,451 @@
+<view class="container">
+  <!-- Header -->
+  <view class="appbar">
+    <view class="brand" bindtap="onGoHome">
+      <image class="logo" src="/images/logo.png" mode="aspectFit"></image>
+      <text>易计算</text>
+    </view>
+  </view>
+
+  <view class="draft-tip">{{draftNotice}}</view>
+
+  <view class="form-section">1. 项目基础信息</view>
+  <view class="glass form-card">
+    <view class="row big">
+      <text class="label">项目名称</text>
+      <input class="row-input" placeholder="输入名称以存入历史" bindinput="onNameInput" value="{{projectName}}" />
+    </view>
+    
+    <picker bindchange="onStageChange" value="{{stageIndex}}" range="{{stages}}" range-key="label">
+      <view class="row big">
+        <text class="label">工程阶段</text>
+        <text class="value">{{stages[stageIndex].label}}</text>
+        <view class="chev"></view>
+      </view>
+    </picker>
+  </view>
+
+  <!-- F4 engineering design dynamic inputs -->
+  <block wx:if="{{currentStage === 'F4'}}">
+    <view class="form-section">2. 计费额与专业</view>
+    <view class="glass form-card">
+      <view class="row big">
+        <text class="label">工程计费额</text>
+        <input class="row-input text-right" type="digit" placeholder="输入建安工程费" bindinput="onCostInput" value="{{cost}}" />
+        <text class="unit">万元</text>
+      </view>
+
+      <picker bindchange="onSpecialtyChange" value="{{specialtyIndex}}" range="{{specialties}}" range-key="label">
+        <view class="row big">
+          <text class="label">设计专业</text>
+          <text class="value">{{specialties[specialtyIndex].label}}</text>
+          <view class="chev"></view>
+        </view>
+      </picker>
+    </view>
+
+    <view class="form-section">3. 调整系数</view>
+    <view class="glass form-card">
+      <view class="row big" bindtap="onTapSpecialtyCoefOption">
+        <text class="label">专业调整系数</text>
+        <text class="value">{{specialtyCoefText}}</text>
+        <button class="option">选项</button>
+      </view>
+
+      <view class="row big" bindtap="onTapComplexityOption">
+        <text class="label">复杂程度系数</text>
+        <text class="value">{{complexityCoefText}}</text>
+        <button class="option">选项</button>
+      </view>
+
+      <view class="row big" bindtap="onTapAdditionalOption">
+        <text class="label">附加调整系数</text>
+        <text class="value">{{designAddCoefText}}</text>
+        <button class="option">选项</button>
+      </view>
+    </view>
+
+    <view class="form-section">4. 额外服务与收费</view>
+    <view class="glass form-card">
+      <view class="row-stack">
+        <view class="row-stack-left">
+          <text class="row-stack-title">施工图预算编制费 (+10%)</text>
+          <text class="row-stack-desc">编制施工图预算所需费用，按基本设计费的10%计取</text>
+        </view>
+        <view class="toggle {{extraServices.budget ? 'active' : ''}}" bindtap="toggleExtra" data-key="budget"></view>
+      </view>
+
+      <view class="row-stack">
+        <view class="row-stack-left">
+          <text class="row-stack-title">竣工图编制费 (+8%)</text>
+          <text class="row-stack-desc">编制竣工图所需费用，按基本设计费的8%计取</text>
+        </view>
+        <view class="toggle {{extraServices.asbuilt ? 'active' : ''}}" bindtap="toggleExtra" data-key="asbuilt"></view>
+      </view>
+
+      <view class="row-stack">
+        <view class="row-stack-left">
+          <text class="row-stack-title">总体设计费 (+5%)</text>
+          <text class="row-stack-desc">承担建设项目总体设计业务的费用，按基本设计费的5%计取</text>
+        </view>
+        <view class="toggle {{extraServices.overall ? 'active' : ''}}" bindtap="toggleExtra" data-key="overall"></view>
+      </view>
+
+      <view class="row-stack">
+        <view class="row-stack-left">
+          <text class="row-stack-title">主体设计协调费 (+5%)</text>
+          <text class="row-stack-desc">主体设计单位对分包设计单位进行协调，按基本设计费的5%计取</text>
+        </view>
+        <view class="toggle {{extraServices.coordination ? 'active' : ''}}" bindtap="toggleExtra" data-key="coordination"></view>
+      </view>
+
+      <view class="row big" style="border-top: 1rpx solid var(--line);">
+        <text class="label">非标设备设计计费额</text>
+        <input class="row-input text-right" type="digit" placeholder="无则不填" bindinput="onNonStdBaseInput" value="{{extraServices.nonStdDevBase}}" />
+        <text class="unit">万元</text>
+      </view>
+      <view class="row big" wx:if="{{extraServices.nonStdDevBase > 0}}">
+        <text class="label">非标设备设计费率</text>
+        <input class="row-input text-right" type="digit" placeholder="如5表示5%" bindinput="onNonStdRateInput" value="{{extraServices.nonStdDevRate}}" />
+        <text class="unit">%</text>
+      </view>
+    </view>
+  </block>
+
+  <!-- F6 full process consulting dynamic inputs -->
+  <block wx:if="{{currentStage === 'F6'}}">
+    <view class="hint" style="margin-top: -8rpx; margin-bottom: 24rpx; padding: 0 8rpx;">依据：计价格[2002]10号 · 广东地区可参考粤勘设协字[2024]12号、粤建科[2019]12号等服务成本口径</view>
+    <view class="form-section">2. 计费额与专业</view>
+    <view class="glass form-card">
+      <view class="row big">
+        <text class="label">工程计费额</text>
+        <input class="row-input text-right" type="digit" placeholder="输入建设工程费用" bindinput="onCostInput" value="{{cost}}" />
+        <text class="unit">万元</text>
+      </view>
+
+      <picker bindchange="onF6SpecialtyChange" value="{{F6SpecialtyIndex}}" range="{{F6Specialties}}" range-key="label">
+        <view class="row big">
+          <text class="label">服务项目</text>
+          <text class="value">{{F6Specialties[F6SpecialtyIndex].label}}</text>
+          <view class="chev"></view>
+        </view>
+      </picker>
+    </view>
+
+    <view class="form-section">3. 调整系数</view>
+    <view class="glass form-card">
+      <view class="row big">
+        <text class="label">统筹调整系数</text>
+        <text class="value">{{F6Specialties[F6SpecialtyIndex].coef || '1.15'}}</text>
+        <button class="option">默认</button>
+      </view>
+
+      <view class="row big" bindtap="onTapComplexityOption">
+        <text class="label">复杂程度系数</text>
+        <text class="value">{{complexityCoefText}}</text>
+        <button class="option">选项</button>
+      </view>
+
+      <view class="row big" bindtap="onTapAdditionalOption">
+        <text class="label">附加调整系数</text>
+        <text class="value">{{designAddCoefText}}</text>
+        <button class="option">选项</button>
+      </view>
+    </view>
+
+    <view class="form-section">4. 额外服务与收费</view>
+    <view class="glass form-card">
+      <view class="row-stack">
+        <view class="row-stack-left">
+          <text class="row-stack-title">施工图预算编制费 (+10%)</text>
+          <text class="row-stack-desc">编制施工图预算所需费用，按基本收费的10%计取</text>
+        </view>
+        <view class="toggle {{extraServices.budget ? 'active' : ''}}" bindtap="toggleExtra" data-key="budget"></view>
+      </view>
+
+      <view class="row-stack">
+        <view class="row-stack-left">
+          <text class="row-stack-title">竣工图编制费 (+8%)</text>
+          <text class="row-stack-desc">编制竣工图所需费用，按基本收费的8%计取</text>
+        </view>
+        <view class="toggle {{extraServices.asbuilt ? 'active' : ''}}" bindtap="toggleExtra" data-key="asbuilt"></view>
+      </view>
+
+      <view class="row-stack">
+        <view class="row-stack-left">
+          <text class="row-stack-title">总体设计费 (+5%)</text>
+          <text class="row-stack-desc">承担建设项目总体设计业务的费用，按基本收费的5%计取</text>
+        </view>
+        <view class="toggle {{extraServices.overall ? 'active' : ''}}" bindtap="toggleExtra" data-key="overall"></view>
+      </view>
+
+      <view class="row-stack">
+        <view class="row-stack-left">
+          <text class="row-stack-title">主体设计协调费 (+5%)</text>
+          <text class="row-stack-desc">主体设计单位对分包设计单位进行协调，按基本收费的5%计取</text>
+        </view>
+        <view class="toggle {{extraServices.coordination ? 'active' : ''}}" bindtap="toggleExtra" data-key="coordination"></view>
+      </view>
+
+      <view class="row big" style="border-top: 1rpx solid var(--line);">
+        <text class="label">非标设备设计计费额</text>
+        <input class="row-input text-right" type="digit" placeholder="无则不填" bindinput="onNonStdBaseInput" value="{{extraServices.nonStdDevBase}}" />
+        <text class="unit">万元</text>
+      </view>
+      <view class="row big" wx:if="{{extraServices.nonStdDevBase > 0}}">
+        <text class="label">非标设备设计费率</text>
+        <input class="row-input text-right" type="digit" placeholder="如5表示5%" bindinput="onNonStdRateInput" value="{{extraServices.nonStdDevRate}}" />
+        <text class="unit">%</text>
+      </view>
+    </view>
+  </block>
+
+  <!-- F1 planning / pre-consulting dynamic inputs -->
+  <block wx:if="{{currentStage === 'F1'}}">
+    <view class="form-section">2. 投资总额与类别</view>
+    <view class="glass form-card">
+      <view class="row big">
+        <text class="label">估算投资总额</text>
+        <input class="row-input text-right" type="digit" placeholder="输入项目估算投资" bindinput="onCostInput" value="{{cost}}" />
+        <text class="unit">万元</text>
+      </view>
+
+      <picker bindchange="onReportTypeChange" value="{{reportIndex}}" range="{{reportTypes}}" range-key="label">
+        <view class="row big">
+          <text class="label">服务项目</text>
+          <text class="value">{{reportTypes[reportIndex].label}}</text>
+          <view class="chev"></view>
+        </view>
+      </picker>
+    </view>
+
+    <view class="form-section">3. 调整系数</view>
+    <view class="glass form-card">
+      <view class="row big" bindtap="onTapPlanningAdditionalOption">
+        <text class="label">附加调整系数</text>
+        <text class="value">{{planningAddCoefText}}</text>
+        <button class="option">选项</button>
+      </view>
+    </view>
+  </block>
+
+  <!-- F2 land planning dynamic inputs -->
+  <block wx:if="{{currentStage === 'F2'}}">
+    <view class="form-section">2. 规划规模与类别</view>
+    <view class="glass form-card">
+      <view class="row big">
+        <text class="label">规划用地面积</text>
+        <input class="row-input text-right" type="digit" placeholder="输入规划用地/估算面积" bindinput="onCostInput" value="{{cost}}" />
+        <text class="unit">{{planningTypes[planningTypeIndex].value === 'overall' ? 'km²' : '万㎡'}}</text>
+      </view>
+
+      <picker bindchange="onPlanningTypeChange" value="{{planningTypeIndex}}" range="{{planningTypes}}" range-key="label">
+        <view class="row big">
+          <text class="label">规划类别</text>
+          <text class="value">{{planningTypes[planningTypeIndex].label}}</text>
+          <view class="chev"></view>
+        </view>
+      </picker>
+    </view>
+
+    <!-- 修建性详细规划 (constructive) -->
+    <block wx:if="{{planningTypes[planningTypeIndex].value === 'constructive'}}">
+      <view class="form-section">3. 修规专有调整</view>
+      <view class="glass form-card">
+        <view class="row big" bindtap="onTapConstructiveTypeOption">
+          <text class="label">用地规划类型</text>
+          <text class="value">{{constructiveType === 'residential' ? '居住区规划' : '公建规划'}}</text>
+          <button class="option">选项</button>
+        </view>
+
+        <view class="row big" bindtap="onTapConstructiveSchemeOption">
+          <text class="label">方案平面深度</text>
+          <text class="value">{{constructiveScheme === 'general' ? '常规修规' : (constructiveScheme === 'scheme' ? '增加总平方案' : '增加总平设计')}}</text>
+          <button class="option">选项</button>
+        </view>
+
+        <view class="row-stack">
+          <view class="row-stack-left">
+            <text class="row-stack-title">竖向规划 (+30%)</text>
+            <text class="row-stack-desc">包含场地平整与竖向规划设计</text>
+          </view>
+          <view class="toggle {{constructiveVertical ? 'active' : ''}}" bindtap="toggleConstructiveVertical"></view>
+        </view>
+      </view>
+    </block>
+
+    <!-- 控制性详细规划 (regulatory) -->
+    <block wx:if="{{planningTypes[planningTypeIndex].value === 'regulatory'}}">
+      <view class="form-section">3. 控规专有调整</view>
+      <view class="glass form-card">
+        <view class="row big" bindtap="onTapRegulatoryTypeOption">
+          <text class="label">项目地段类别</text>
+          <text class="value">{{regulatoryType === 'new_zone' ? '开发区/自贸区' : (regulatoryType === 'general_zone' ? '城市一般地段' : '城市重点地段')}}</text>
+          <button class="option">选项</button>
+        </view>
+
+        <view class="row big" bindtap="onTapRegulatoryLevelOption">
+          <text class="label">控制编制层面</text>
+          <text class="value">{{regulatoryLevel === 'one_level' ? '一个层面 (地块)' : '两个层面 (单元+地块)'}}</text>
+          <button class="option">选项</button>
+        </view>
+
+        <view class="row-stack">
+          <view class="row-stack-left">
+            <text class="row-stack-title">包含附加服务</text>
+            <text class="row-stack-desc">包含地块附加专项控制收费 (+2500元/万m²)</text>
+          </view>
+          <view class="toggle {{regulatoryExtra ? 'active' : ''}}" bindtap="toggleRegulatoryExtra"></view>
+        </view>
+
+        <view class="row-stack">
+          <view class="row-stack-left">
+            <text class="row-stack-title">控规修改论证 (-50%)</text>
+            <text class="row-stack-desc">对控规局部调整或论证，减半计取</text>
+          </view>
+          <view class="toggle {{regulatoryAmendment ? 'active' : ''}}" bindtap="toggleRegulatoryAmendment"></view>
+        </view>
+      </view>
+    </block>
+
+    <!-- 城市总体空间规划 (overall) -->
+    <block wx:if="{{planningTypes[planningTypeIndex].value === 'overall'}}">
+      <view class="form-section">3. 总规专有调整</view>
+      <view class="glass form-card">
+        <view class="row big">
+          <text class="label">城市总体规模</text>
+          <input class="row-input text-right" type="number" placeholder="默认50" bindinput="onOverallPopulationInput" value="{{overallPopulation}}" />
+          <text class="unit">万人</text>
+        </view>
+
+        <view class="row big" bindtap="onTapOverallApprovalOption">
+          <text class="label">审批决策层级</text>
+          <text class="value">{{overallApproval === 'council' ? '国务院审批' : (overallApproval === 'province' ? '省政府审批' : '其他')}}</text>
+          <button class="option">选项</button>
+        </view>
+
+        <view class="row big" bindtap="onTapOverallTypeOption">
+          <text class="label">总体规划细类</text>
+          <text class="value">{{overallType === 'normal' ? '总体规划' : (overallType === 'recent' ? '近期建设规划' : '实施评估研究')}}</text>
+          <button class="option">选项</button>
+        </view>
+      </view>
+    </block>
+
+  </block>
+
+  <!-- F3 engineering survey dynamic inputs -->
+  <block wx:if="{{currentStage === 'F3'}}">
+    <view class="form-section">2. 勘察工程费与类别</view>
+    <view class="glass form-card">
+      <view class="row big">
+        <text class="label">勘察计费工程费</text>
+        <input class="row-input text-right" type="digit" placeholder="输入工程建安费" bindinput="onCostInput" value="{{cost}}" />
+        <text class="unit">万元</text>
+      </view>
+
+      <picker bindchange="onSurveyTypeChange" value="{{surveyTypeIndex}}" range="{{surveyTypes}}" range-key="label">
+        <view class="row big">
+          <text class="label">勘察服务类别</text>
+          <text class="value">{{surveyTypes[surveyTypeIndex].label}}</text>
+          <view class="chev"></view>
+        </view>
+      </picker>
+    </view>
+
+    <view class="form-section">3. 调整系数</view>
+    <view class="glass form-card">
+      <view class="row big" bindtap="onTapSurveyComplexityOption">
+        <text class="label">工程复杂程度</text>
+        <text class="value">{{surveyComplexityVal}} ({{surveyComplexity === 'I' ? 'I级' : (surveyComplexity === 'II' ? 'II级' : (surveyComplexity === 'III' ? 'III级' : 'IV级'))}})</text>
+        <button class="option">选项</button>
+      </view>
+
+      <view class="row big" bindtap="onTapSurveySiteOption">
+        <text class="label">场地复杂程度</text>
+        <text class="value">{{surveySiteComplexityVal}} ({{surveySiteComplexity === 'I' ? 'I级' : (surveySiteComplexity === 'II' ? 'II级' : (surveySiteComplexity === 'III' ? 'III级' : 'IV级'))}})</text>
+        <button class="option">选项</button>
+      </view>
+
+      <view class="row big" bindtap="onTapSurveyAdditionalOption">
+        <text class="label">附加调整系数</text>
+        <text class="value">{{surveyAddCoefText}}</text>
+        <button class="option">选项</button>
+      </view>
+    </view>
+  </block>
+
+  <!-- F5 cost consulting dynamic inputs -->
+  <block wx:if="{{currentStage === 'F5'}}">
+    <view class="form-section">2. 计费额与咨询项目</view>
+    <view class="glass form-card">
+      <view class="row big" wx:if="{{costTypes[costTypeIndex].value !== 'steel_calc'}}">
+        <text class="label">计费基数金额</text>
+        <input class="row-input text-right" type="digit" placeholder="输入工程造价/送审价" bindinput="onCostInput" value="{{cost}}" />
+        <text class="unit">万元</text>
+      </view>
+
+      <picker bindchange="onCostTypeChange" value="{{costTypeIndex}}" range="{{costTypes}}" range-key="label">
+        <view class="row big">
+          <text class="label">咨询项目类型</text>
+          <text class="value">{{costTypes[costTypeIndex].label}}</text>
+          <view class="chev"></view>
+        </view>
+      </picker>
+
+      <!-- 结算审核特有：输入核减额 -->
+      <view class="row big" wx:if="{{costTypes[costTypeIndex].value === 'settlement_audit'}}" style="border-top: 1rpx solid var(--line);">
+        <text class="label">核增/核减金额</text>
+        <input class="row-input text-right" type="digit" placeholder="输入核增/核减额" bindinput="onCostDeductionInput" value="{{costDeduction}}" />
+        <text class="unit">万元</text>
+      </view>
+
+      <!-- 钢筋计算特有：输入实际吨数 -->
+      <view class="row big" wx:if="{{costTypes[costTypeIndex].value === 'steel_calc'}}">
+        <text class="label">钢筋用量</text>
+        <input class="row-input text-right" type="digit" placeholder="输入计算吨数" bindinput="onSteelWeightInput" value="{{steelWeight}}" />
+        <text class="unit">吨</text>
+      </view>
+    </view>
+  </block>
+
+  <!-- Common settings -->
+  <view class="form-section">5. 核算微调</view>
+  <view class="glass form-card">
+    <view class="row big">
+      <text class="label">浮动折扣比例</text>
+      <input class="row-input text-right" type="number" placeholder="默认100" bindinput="onDiscountInput" value="{{discount}}" />
+      <text class="unit">%</text>
+    </view>
+
+    <view class="row big">
+      <text class="label">增值税税率</text>
+      <input class="row-input text-right" type="number" placeholder="默认6" bindinput="onTaxRateInput" value="{{taxRate}}" />
+      <text class="unit">%</text>
+    </view>
+  </view>
+
+  <!-- CTA Actions -->
+  <view class="actions">
+    <button class="cta" bindtap="onCalculate">确认</button>
+    <button class="cta reset" bindtap="onReset">重置</button>
+  </view>
+
+  <view style="height: 50rpx;"></view>
+
+  <view class="copyright">Copyright © 2026 1+H ARCH</view>
+
+  <view class="coef-sheet-mask" wx:if="{{showCoefSheet}}" bindtap="onCloseCoefSheet"></view>
+  <view class="coef-sheet" wx:if="{{showCoefSheet}}">
+    <view class="coef-sheet-header">
+      <text class="coef-sheet-title">选择专业调整系数</text>
+      <text class="coef-sheet-close" bindtap="onCloseCoefSheet">关闭</text>
+    </view>
+    <scroll-view class="coef-sheet-list" scroll-y="true" enhanced="true" show-scrollbar="true">
+      <view class="coef-sheet-option" wx:for="{{coefSheetOptions}}" wx:key="value" data-index="{{index}}" bindtap="onSelectCoefSheetOption">
+        <text class="coef-sheet-label">{{item.label}}</text>
+        <text class="coef-sheet-value">{{item.coef}}</text>
+      </view>
+    </scroll-view>
+  </view>
+</view>

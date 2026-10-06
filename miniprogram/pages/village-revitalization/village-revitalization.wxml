@@ -1,0 +1,124 @@
+<view class="container">
+  <view class="appbar">
+    <view class="brand" bindtap="onGoHome">
+      <image class="logo" src="/images/logo.png" mode="aspectFit"></image>
+      <text>易计算</text>
+    </view>
+  </view>
+  <view class="h1-subtitle">依据：自然资源部《市级国土空间总体规划编制指南（试行）》2020 · 各省村庄规划编制指南</view>
+
+  <!-- 1. 项目信息 -->
+  <view class="form-section">1. 项目基础信息</view>
+  <view class="glass form-card">
+    <view class="row big">
+      <text class="label">项目名称</text>
+      <input class="row-input" placeholder="输入名称以存入历史" bindinput="onNameInput" value="{{projectName}}" />
+    </view>
+  </view>
+
+  <!-- 2. 规划类型 -->
+  <view class="form-section">2. 规划类型</view>
+  <view class="glass form-card">
+    <picker bindchange="onPlanTypeChange" value="{{planTypeIndex}}" range="{{planTypes}}" range-key="name">
+      <view class="row big">
+        <text class="label">规划类型</text>
+        <text class="value">{{planTypes[planTypeIndex].icon}} {{planTypes[planTypeIndex].name}}</text>
+        <view class="chev"></view>
+      </view>
+    </picker>
+
+    <!-- 乡域/村庄规划：输入面积 -->
+    <block wx:if="{{planTypes[planTypeIndex].id !== 'whole_village'}}">
+      <view class="row big">
+        <text class="label">规划面积</text>
+        <input class="row-input text-right" type="digit" placeholder="输入面积" bindinput="onAreaInput" value="{{area}}" />
+        <text class="unit">km²</text>
+      </view>
+    </block>
+
+    <!-- 整村规划：选择子类型 + 村庄数 -->
+    <block wx:if="{{planTypes[planTypeIndex].id === 'whole_village'}}">
+      <picker bindchange="onWholeTypeChange" value="{{wholeTypeIndex}}" range="{{wholeTypes}}" range-key="name">
+        <view class="row big">
+          <text class="label">规划子类型</text>
+          <text class="value">{{wholeTypes[wholeTypeIndex].name}}</text>
+          <view class="chev"></view>
+        </view>
+      </picker>
+      <view class="row-sub" wx:if="{{wholeTypes[wholeTypeIndex].desc}}">
+        <text>{{wholeTypes[wholeTypeIndex].desc}} · {{wholeTypes[wholeTypeIndex].unit}}</text>
+      </view>
+      <view class="row big">
+        <text class="label">涉及村庄数</text>
+        <input class="row-input text-right" type="number" placeholder="1" bindinput="onVillageCountInput" value="{{villageCount}}" />
+        <text class="unit">个</text>
+      </view>
+    </block>
+  </view>
+
+  <!-- 3. 调整系数 -->
+  <view class="form-section">3. 调整系数（可多选）</view>
+  <view class="glass form-card">
+    <view class="chip-group">
+      <view class="chip {{item.selected ? 'active' : ''}}"
+            wx:for="{{addOptions}}" wx:key="id" wx:for-item="item"
+            bindtap="toggleAdd" data-id="{{item.id}}">
+        <text>{{item.name}}（×{{item.coef}}）</text>
+        <image wx:if="{{item.selected}}" src="/images/check.png" class="chip-check"></image>
+      </view>
+    </view>
+  </view>
+
+  <!-- 4. 收费 -->
+  <view class="form-section">4. 收费比例与税率</view>
+  <view class="glass form-card">
+    <view class="row big">
+      <text class="label">总收费比例</text>
+      <input class="row-input text-right" type="digit" placeholder="100" bindinput="onDiscountInput" value="{{discount}}" />
+      <text class="unit">%</text>
+    </view>
+    <view class="row big">
+      <text class="label">增值税率</text>
+      <input class="row-input text-right" type="digit" placeholder="6" bindinput="onTaxRateInput" value="{{taxRate}}" />
+      <text class="unit">%</text>
+    </view>
+  </view>
+
+  <button class="cta" bindtap="onCalculate">开始计算</button>
+
+  <!-- 结果 -->
+  <block wx:if="{{resultVisible && result}}">
+    <view class="result-card" style="background: linear-gradient(135deg, #2E7D32, rgba(27, 94, 32, 0.85));">
+      <view class="result-label">{{result.stageName}}合计</view>
+      <view class="result-value">¥ {{result.total}} 万</view>
+      <view class="result-subtitle" wx:if="{{result.minFeeApplied}}">⚠ 已应用最低保底费用</view>
+    </view>
+
+    <view class="form-section">费用明细</view>
+    <view class="glass form-card">
+      <view class="row big">
+        <text class="label">规划面积</text>
+        <text class="value">{{result.cost}}</text>
+      </view>
+      <view class="row big">
+        <text class="label">基本规划费</text>
+        <text class="value">{{result.basePrice}} 万元</text>
+      </view>
+      <view class="row big" wx:if="{{result.specialtyCoef !== 1.0}}">
+        <text class="label">调整系数</text>
+        <text class="value">×{{result.specialtyCoef}}</text>
+      </view>
+      <view class="row big" wx:if="{{result.addDetails && result.addDetails.length}}" wx:for="{{result.addDetails}}" wx:key="name">
+        <text class="label">{{item.name}}</text>
+        <text class="value">×{{item.coef}}</text>
+      </view>
+      <view class="row big" style="background: rgba(46, 125, 50, 0.06);">
+        <text style="font-weight: 700;">合计</text>
+        <text class="value" style="font-size: 34rpx; font-weight: 800; color: #0d1d35;">{{result.total}} 万元</text>
+      </view>
+    </view>
+  </block>
+
+  <view style="height: 80rpx;"></view>
+  <view class="copyright">Copyright © 2026 1+H ARCH</view>
+</view>

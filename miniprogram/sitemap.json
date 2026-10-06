@@ -1,0 +1,7 @@
+{
+  "desc": "关于页面索引规则",
+  "rules": [{
+    "action": "allow",
+    "page": "*"
+  }]
+}

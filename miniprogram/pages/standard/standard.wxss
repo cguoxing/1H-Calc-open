@@ -1,0 +1,54 @@
+/* ── AppBar ── */
+.appbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* ── Standard List ── */
+.standard-list {
+  display: grid;
+  gap: 16rpx;
+}
+
+.standard-item {
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 30rpx;
+}
+
+.item-header:active {
+  opacity: 0.7;
+}
+
+.item-title {
+  flex: 1;
+  font-size: 28rpx;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1.4;
+}
+
+.item-toggle {
+  font-size: 22rpx;
+  color: var(--muted);
+  flex-shrink: 0;
+  margin-left: 16rpx;
+}
+
+.item-content {
+  padding: 0 30rpx 30rpx;
+  font-size: 26rpx;
+  color: var(--slate);
+  line-height: 1.8;
+  white-space: pre-wrap;
+  border-top: 1rpx solid var(--line);
+  margin: 0 30rpx;
+}

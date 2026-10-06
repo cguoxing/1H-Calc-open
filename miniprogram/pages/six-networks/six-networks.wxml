@@ -1,0 +1,158 @@
+<view class="container">
+  <view class="appbar">
+    <view class="brand" bindtap="onGoHome">
+      <image class="logo" src="/images/logo.png" mode="aspectFit"></image>
+      <text>易计算</text>
+    </view>
+  </view>
+  <view class="h1-subtitle">依据：中央政治局会议部署（2026.4.28）+ 国务院"六张网"建设规划（2026.5.9）</view>
+
+  <!-- 1. 项目信息 -->
+  <view class="form-section">1. 项目基础信息</view>
+  <view class="glass form-card">
+    <view class="row big">
+      <text class="label">项目名称</text>
+      <input class="row-input" placeholder="输入名称以存入历史" bindinput="onNameInput" value="{{projectName}}" />
+    </view>
+
+    <view class="row big">
+      <text class="label">工程计费额</text>
+      <input class="row-input text-right" type="digit" placeholder="输入工程计费额" bindinput="onCostInput" value="{{cost}}" />
+      <text class="unit">万元</text>
+    </view>
+  </view>
+
+  <!-- 2. 网络类型选择 -->
+  <view class="form-section">2. 选择网络类型</view>
+  <view class="glass form-card">
+    <picker bindchange="onNetworkChange" value="{{networkIndex}}" range="{{networks}}" range-key="name">
+      <view class="row big">
+        <text class="label">网络类型</text>
+        <text class="value">{{networks[networkIndex].name}}</text>
+        <view class="chev"></view>
+      </view>
+    </picker>
+
+    <view class="network-meta">
+      <text class="network-invest">{{networks[networkIndex].investment}}</text>
+      <text class="network-desc">{{networks[networkIndex].desc}}</text>
+    </view>
+  </view>
+
+  <!-- 3. 工程类型 -->
+  <view class="form-section">3. 工程类型与复杂度</view>
+  <view class="glass form-card">
+    <picker wx:if="{{subTypes.length > 0}}" bindchange="onSubTypeChange" value="{{subTypeIndex}}" range="{{subTypes}}" range-key="name">
+      <view class="row big">
+        <text class="label">工程类型</text>
+        <text class="value">{{subTypes[subTypeIndex].name}}（×{{subTypes[subTypeIndex].coef}}）</text>
+        <view class="chev"></view>
+      </view>
+    </picker>
+
+    <view class="row-sub" wx:if="{{subTypes[subTypeIndex].desc}}">
+      <text>{{subTypes[subTypeIndex].desc}}</text>
+    </view>
+
+    <picker bindchange="onComplexityChange" value="{{complexityIndex}}" range="{{complexityOptions}}" range-key="name">
+      <view class="row big">
+        <text class="label">复杂程度</text>
+        <text class="value">{{complexityOptions[complexityIndex].name}}</text>
+        <view class="chev"></view>
+      </view>
+    </picker>
+
+    <!-- 附加调整项 -->
+    <block wx:if="{{additionalOptions.length > 0}}">
+      <view class="row-stack-title">特殊调整项（可多选）</view>
+      <view class="chip-group">
+        <view class="chip {{item.selected ? 'active' : ''}}"
+              wx:for="{{additionalOptions}}" wx:key="id" wx:for-item="item"
+              bindtap="toggleAdditional" data-id="{{item.id}}">
+          <text>{{item.name}}（×{{item.coef}}）</text>
+          <image wx:if="{{item.selected}}" src="/images/check.png" class="chip-check"></image>
+        </view>
+      </view>
+    </block>
+  </view>
+
+  <!-- 4. 收费 -->
+  <view class="form-section">4. 收费比例与税率</view>
+  <view class="glass form-card">
+    <view class="row big">
+      <text class="label">总收费比例</text>
+      <input class="row-input text-right" type="digit" placeholder="100" bindinput="onDiscountInput" value="{{discount}}" />
+      <text class="unit">%</text>
+    </view>
+    <view class="row big">
+      <text class="label">增值税率</text>
+      <input class="row-input text-right" type="digit" placeholder="6" bindinput="onTaxRateInput" value="{{taxRate}}" />
+      <text class="unit">%</text>
+    </view>
+  </view>
+
+  <!-- 计算按钮 -->
+  <button class="cta" bindtap="onCalculate">开始计算</button>
+
+  <!-- 计算结果 -->
+  <block wx:if="{{resultVisible && result}}">
+    <view class="result-card" style="background: linear-gradient(135deg, {{networks[networkIndex].color}}, rgba(0,0,0,0.3));">
+      <view class="result-label">{{networks[networkIndex].name}}工程设计费合计</view>
+      <view class="result-value">¥ {{result.total}} 万</view>
+      <view class="result-subtitle">计费额 {{result.cost}} 万元 · 基价 {{result.basePrice}} 万 · 系数 {{result.specialtyCoef}}×{{result.complexityCoef}}×{{result.additionalCoef}}</view>
+    </view>
+
+    <view class="form-section">费用明细</view>
+    <view class="glass form-card">
+      <view class="row big">
+        <text class="label">工程计费额</text>
+        <text class="value">{{result.cost}} 万元</text>
+      </view>
+      <view class="row big">
+        <text class="label">工程设计基价</text>
+        <text class="value">{{result.basePrice}} 万元</text>
+      </view>
+      <view class="row big">
+        <text class="label">专业调整系数</text>
+        <text class="value">{{result.specialtyCoef}}（{{result.subType}}）</text>
+      </view>
+      <view class="row big">
+        <text class="label">复杂程度系数</text>
+        <text class="value">{{result.complexityCoef}}（{{result.complexityName}}）</text>
+      </view>
+      <view class="row big" wx:if="{{result.additionalCoef > 1.0}}">
+        <text class="label">附加调整系数</text>
+        <text class="value">{{result.additionalCoef}}</text>
+      </view>
+      <view class="row big" wx:if="{{result.additionalDetails.length > 0}}" wx:for="{{result.additionalDetails}}" wx:key="name">
+        <text class="label">{{item.name}}</text>
+        <text class="value">×{{item.coef}}</text>
+      </view>
+      <view class="row big" wx:if="{{result.discount < 100}}">
+        <text class="label">总收费比例</text>
+        <text class="value">{{result.discount}}%</text>
+      </view>
+      <view class="row big" wx:if="{{result.taxRate > 0}}">
+        <text class="label">增值税率 ({{result.taxRate}}%)</text>
+        <text class="value">+{{result.tax}} 万元</text>
+      </view>
+      <view class="row big" style="background: rgba(13, 29, 53, 0.04);">
+        <text style="font-weight: 700;">合计</text>
+        <text class="value" style="font-size: 34rpx; font-weight: 800; color: #0d1d35;">{{result.total}} 万元</text>
+      </view>
+    </view>
+
+    <!-- 内插法 -->
+    <view class="form-section" wx:if="{{result.interpolationDetail}}">基价内插还原 (直线内插法)</view>
+    <view class="glass form-card" wx:if="{{result.interpolationDetail}}" style="padding: 24rpx 32rpx; font-size: 26rpx;">
+      <view class="formula-title">计算公式:</view>
+      <view class="formula-text">{{result.interpolationDetail.formula}}</view>
+      <view class="divider" style="background: rgba(0,0,0,0.06); height: 1rpx; margin: 16rpx 0;"></view>
+      <view class="formula-title">内插步骤:</view>
+      <view class="formula-steps">{{result.interpolationDetail.steps}}</view>
+    </view>
+  </block>
+
+  <view style="height: 80rpx;"></view>
+  <view class="copyright">Copyright © 2026 1+H ARCH</view>
+</view>

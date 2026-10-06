@@ -1,0 +1,104 @@
+<view class="container">
+  <!-- Simulated AppBar -->
+  <view class="appbar">
+    <view class="brand" bindtap="onGoHome">
+      <image class="logo" src="/images/logo.png" mode="aspectFit"></image>
+      <text>易计算</text>
+    </view>
+  </view>
+
+  <!-- 搜索栏 -->
+  <view class="search-bar">
+    <text class="search-icon">🔍</text>
+    <input
+      class="search-input"
+      placeholder="搜索工具名称或描述..."
+      value="{{searchText}}"
+      bindinput="onSearchInput"
+      confirm-type="search"
+    />
+    <view class="search-clear" wx:if="{{searchText}}" bindtap="onClearSearch">
+      <text>✕</text>
+    </view>
+  </view>
+
+  <!-- 分类 Tab -->
+  <scroll-view class="category-scroll" scroll-x="true" enhanced="true" show-scrollbar="{{false}}">
+    <view class="category-tabs">
+      <view
+        class="cat-tab {{activeCategory === item.key ? 'active' : ''}}"
+        wx:for="{{categories}}"
+        wx:key="key"
+        bindtap="onCategoryChange"
+        data-category="{{item.key}}"
+      >
+        <text>{{item.label}}</text>
+      </view>
+    </view>
+  </scroll-view>
+
+  <!-- 最近使用 -->
+  <view class="recent-section" wx:if="{{recentTools.length > 0 && activeCategory === 'all' && !searchText}}">
+    <view class="section-header">
+      <text class="section-title">最近使用</text>
+      <text class="section-action" bindtap="onClearRecent">清除</text>
+    </view>
+    <scroll-view class="recent-scroll" scroll-x="true" enhanced="true" show-scrollbar="{{false}}">
+      <view class="recent-list">
+        <view
+          class="recent-chip soft"
+          wx:for="{{recentTools}}"
+          wx:key="id"
+          bindtap="onTapTool"
+          data-id="{{item.id}}"
+        >
+          <view class="recent-icon-box">
+            <image class="recent-icon" wx:if="{{!item.useTextIcon}}" src="/images/{{item.icon}}.svg" mode="aspectFit"></image>
+            <text wx:else class="recent-text-icon">{{item.textIcon}}</text>
+          </view>
+          <text class="recent-label">{{item.title}}</text>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- 工具统计 + 结果提示 -->
+  <view class="stats-bar" wx:if="{{searchText || activeCategory !== 'all'}}">
+    <text class="stats-text">
+      <block wx:if="{{searchText}}">搜索 "{{searchText}}" </block>
+      找到 {{toolCount}} 个工具
+    </text>
+    <text class="stats-reset" bindtap="onClearSearch">重置</text>
+  </view>
+
+  <!-- 工具卡片网格 -->
+  <view class="tool-grid" wx:if="{{filteredTools.length > 0}}">
+    <view
+      class="soft tool-card"
+      wx:for="{{filteredTools}}"
+      wx:key="id"
+      bindtap="onTapTool"
+      data-id="{{item.id}}"
+    >
+      <view class="tool-card-top">
+        <view class="iconbox">
+          <image wx:if="{{!item.useTextIcon}}" src="/images/{{item.icon}}.svg" mode="aspectFit" binderror="onImageError" data-index="{{index}}"></image>
+          <text wx:else class="text-icon">{{item.textIcon}}</text>
+        </view>
+        <view class="chev"></view>
+      </view>
+      <text class="tool-card-title">{{item.title}}</text>
+      <text class="tool-card-desc">{{item.desc}}</text>
+    </view>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty-state" wx:if="{{filteredTools.length === 0}}">
+    <text class="empty-icon-box">📦</text>
+    <text class="empty-title">未找到匹配工具</text>
+    <text class="empty-desc">试试其他关键词或分类</text>
+    <button class="empty-btn" bindtap="onClearSearch">查看全部工具</button>
+  </view>
+
+  <view class="copyright">Copyright © 2026 1+H ARCH</view>
+</view>

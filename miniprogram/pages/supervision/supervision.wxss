@@ -1,0 +1,14 @@
+.calc-title {
+  margin-top: 8rpx;
+  margin-bottom: 32rpx;
+}
+
+
+.logo {
+  width: 72rpx;
+  height: 72rpx;
+  border-radius: 16rpx;
+  display: block;
+  box-shadow: 0 10rpx 24rpx rgba(47, 62, 82, .1);
+}
+

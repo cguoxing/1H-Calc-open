@@ -1,0 +1,460 @@
+.container {
+  min-height: 100vh;
+  background: var(--bg);
+  padding: 0 0 100rpx;
+}
+
+.appbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20rpx 32rpx;
+  background: var(--white);
+  border-bottom: 1rpx solid var(--line);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  font-size: 34rpx;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.logo {
+  width: 48rpx;
+  height: 48rpx;
+}
+
+.back-btn {
+  width: 44rpx;
+  height: 44rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.back-btn image {
+  width: 24rpx;
+  height: 24rpx;
+}
+
+/* 项目信息卡片 */
+.project-header-card {
+  margin: 24rpx 24rpx 12rpx;
+  padding: 24rpx 28rpx;
+  border-radius: 16rpx;
+  background: var(--white);
+  border: 1rpx solid var(--line);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.project-header-left {
+  flex: 1;
+  min-width: 0;
+}
+
+.project-compare-name {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: var(--ink);
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.project-compare-desc {
+  font-size: 24rpx;
+  color: var(--text-secondary);
+  margin-top: 8rpx;
+  display: block;
+}
+
+.switch-project-btn {
+  padding: 12rpx 24rpx;
+  border-radius: 12rpx;
+  background: var(--icon-bg);
+  font-size: 24rpx;
+  font-weight: 700;
+  color: var(--ink);
+  flex-shrink: 0;
+  border: 1rpx solid var(--line);
+}
+
+.switch-project-btn:active {
+  background: rgba(16, 37, 68, 0.08);
+}
+
+/* 操作栏 */
+.compare-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12rpx 24rpx;
+}
+
+.toggle-all-btn {
+  padding: 10rpx 28rpx;
+  border-radius: 20rpx;
+  background: var(--white);
+  font-size: 26rpx;
+  color: var(--accent);
+  border: 1rpx solid var(--accent);
+}
+
+.selected-count {
+  font-size: 24rpx;
+  color: var(--text-secondary);
+}
+
+/* 子项选择列表 */
+.compare-item-list {
+  max-height: 500rpx;
+  padding: 0 24rpx;
+}
+
+.compare-item {
+  display: flex;
+  align-items: center;
+  padding: 20rpx 24rpx;
+  margin-bottom: 10rpx;
+  border-radius: 14rpx;
+  background: var(--white);
+  border: 2rpx solid transparent;
+  transition: all 0.2s;
+}
+
+.compare-item.active {
+  border-color: var(--accent);
+  background: rgba(0, 122, 255, 0.04);
+}
+
+.compare-checkbox {
+  width: 40rpx;
+  height: 40rpx;
+  border-radius: 8rpx;
+  border: 2rpx solid var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 20rpx;
+  flex-shrink: 0;
+}
+
+.compare-checkbox.checked {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.compare-checkbox image {
+  width: 22rpx;
+  height: 22rpx;
+}
+
+.compare-item-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.compare-item-name {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: var(--ink);
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.compare-item-stage {
+  font-size: 22rpx;
+  margin-top: 4rpx;
+  display: block;
+}
+
+.compare-item-total {
+  font-size: 30rpx;
+  font-weight: 700;
+  color: var(--ink);
+  flex-shrink: 0;
+  margin-left: 16rpx;
+}
+
+/* 对比统计 */
+.compare-stats-section {
+  margin-top: 24rpx;
+  padding: 0 24rpx;
+}
+
+.h2 {
+  font-size: 28rpx;
+  font-weight: 700;
+  color: var(--ink);
+  margin: 24rpx 0 12rpx;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16rpx;
+  padding: 24rpx;
+  border-radius: 16rpx;
+  background: var(--white);
+}
+
+.stat-card {
+  text-align: center;
+  padding: 16rpx 8rpx;
+}
+
+.stat-num {
+  font-size: 36rpx;
+  font-weight: 800;
+  color: var(--accent);
+  display: block;
+}
+
+.stat-label {
+  font-size: 22rpx;
+  color: var(--text-secondary);
+  margin-top: 6rpx;
+  display: block;
+}
+
+/* 对比图表 */
+.compare-chart-section {
+  margin-top: 24rpx;
+  padding: 0 24rpx;
+}
+
+.chart-container {
+  padding: 24rpx;
+  border-radius: 16rpx;
+  background: var(--white);
+}
+
+.chart-bar-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20rpx;
+}
+
+.chart-label {
+  width: 180rpx;
+  flex-shrink: 0;
+}
+
+.chart-name {
+  font-size: 24rpx;
+  font-weight: 600;
+  color: var(--ink);
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.chart-stage {
+  font-size: 20rpx;
+  display: block;
+  margin-top: 2rpx;
+}
+
+.chart-bar-wrap {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+
+.chart-bar {
+  height: 32rpx;
+  border-radius: 6rpx;
+  min-width: 10rpx;
+  transition: width 0.3s ease;
+}
+
+.chart-value {
+  font-size: 24rpx;
+  font-weight: 700;
+  color: var(--ink);
+  white-space: nowrap;
+}
+
+/* 对比详情表 */
+.compare-table-section {
+  margin-top: 24rpx;
+  padding: 0 24rpx;
+}
+
+.compare-table {
+  border-radius: 16rpx;
+  background: var(--white);
+  overflow: hidden;
+}
+
+.table-header-row,
+.table-data-row {
+  display: flex;
+  padding: 18rpx 20rpx;
+  border-bottom: 1rpx solid var(--line);
+}
+
+.table-data-row:last-child {
+  border-bottom: none;
+}
+
+.table-cell {
+  font-size: 24rpx;
+  color: var(--text-secondary);
+}
+
+.table-cell.header {
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.name-col {
+  flex: 2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.num-col {
+  flex: 1;
+  text-align: right;
+}
+
+.num-col.highlight {
+  font-weight: 700;
+}
+
+/* 空状态 */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 80rpx 32rpx;
+}
+
+.empty-icon {
+  width: 120rpx;
+  height: 120rpx;
+  margin-bottom: 24rpx;
+  opacity: 0.3;
+}
+
+.empty-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.empty-desc {
+  font-size: 24rpx;
+  color: var(--text-secondary);
+  margin-top: 10rpx;
+}
+
+.copyright {
+  text-align: center;
+  font-size: 22rpx;
+  color: var(--text-secondary);
+  padding: 32rpx;
+}
+
+/* 项目选择器样式 */
+.project-selector-scroll {
+  flex: 1;
+  max-height: 80vh;
+  padding: 0 24rpx;
+}
+
+.project-selector-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+  padding-bottom: 40rpx;
+}
+
+.project-select-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24rpx 28rpx;
+  border-radius: 16rpx;
+  background: var(--white);
+  border: 1rpx solid var(--line);
+  margin-bottom: 8rpx;
+}
+
+.project-select-card:active {
+  background: rgba(16, 37, 68, 0.04);
+}
+
+.project-select-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6rpx;
+}
+
+.project-select-name {
+  font-size: 28rpx;
+  font-weight: 800;
+  color: var(--ink);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.project-select-meta {
+  font-size: 22rpx;
+  color: var(--text-secondary);
+}
+
+.project-select-count {
+  font-size: 20rpx;
+  color: var(--muted);
+}
+
+.project-select-fee-box {
+  text-align: right;
+  flex-shrink: 0;
+  margin-left: 16rpx;
+}
+
+.project-select-fee-label {
+  font-size: 18rpx;
+  color: var(--muted);
+  display: block;
+  margin-bottom: 2rpx;
+}
+
+.project-select-fee {
+  font-size: 30rpx;
+  font-weight: 800;
+  color: var(--blue);
+}
+
+.empty-btn {
+  background: var(--blue);
+  color: #fff;
+  border: none;
+  font-weight: 700;
+  box-shadow: 0 4rpx 12rpx rgba(16, 39, 68, 0.15);
+}
+
+.empty-btn:active {
+  opacity: 0.9;
+}

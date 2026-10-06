@@ -1,0 +1,59 @@
+<view class="container">
+  <view class="appbar">
+    <view class="brand" bindtap="onGoHome">
+      <image class="logo" src="/images/logo.png" mode="aspectFit"></image>
+      <text>易计算</text>
+    </view>
+  </view>
+  <view class="h2-desc">收录工程设计收费相关国家规定、地方标准与行业规范</view>
+
+  <view class="policy-search">
+    <image class="search-icon" src="/images/search.png" mode="aspectFit"></image>
+    <input
+      class="search-input"
+      placeholder="搜索标题、文号、部门或关键词"
+      value="{{searchText}}"
+      bindinput="onSearchInput"
+      bindconfirm="onSearch"
+      confirm-type="search"
+    />
+    <view class="search-clear" wx:if="{{searchText}}" bindtap="onClearSearch">
+      <text>×</text>
+    </view>
+  </view>
+
+  <!-- 分类 Tab -->
+  <view class="tabs">
+    <view class="tab {{activeTab === 'national' ? 'active' : ''}}" bindtap="onTabChange" data-tab="national">
+      <text>国家规定</text>
+    </view>
+    <view class="tab {{activeTab === 'local' ? 'active' : ''}}" bindtap="onTabChange" data-tab="local">
+      <text>地方标准</text>
+    </view>
+    <view class="tab {{activeTab === 'industry' ? 'active' : ''}}" bindtap="onTabChange" data-tab="industry">
+      <text>行业规范</text>
+    </view>
+  </view>
+
+  <!-- 法规列表 -->
+  <view class="policy-list" wx:if="{{filteredPolicies.length > 0}}">
+    <view class="soft policy-card" wx:for="{{filteredPolicies}}" wx:key="id" bindtap="onTapPolicy" data-id="{{item.id}}">
+      <view class="policy-header">
+        <text class="policy-title">{{item.title}}</text>
+        <view class="chev"></view>
+      </view>
+      <view class="policy-meta">
+        <text class="policy-docno">{{item.docNo}}</text>
+        <text class="policy-dept">{{item.dept}}</text>
+      </view>
+      <view class="policy-summary">{{item.summary}}</view>
+    </view>
+  </view>
+
+  <view class="empty-state" wx:if="{{filteredPolicies.length === 0}}">
+    <image class="empty-icon" src="/images/empty.png"></image>
+    <text class="empty-text">{{searchText ? '没有匹配的政策资料' : '暂无该分类法规'}}</text>
+  </view>
+
+  <view class="copyright">Copyright © 2026 1+H ARCH</view>
+</view>

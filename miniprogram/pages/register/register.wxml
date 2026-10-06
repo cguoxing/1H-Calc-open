@@ -1,0 +1,73 @@
+<view class="container">
+  <!-- WeChat-style AppBar simulated -->
+  <view class="appbar">
+    <view class="brand" bindtap="onGoHome">
+      <image class="logo" src="/images/logo.png" mode="aspectFit"></image>
+      <text>易计算</text>
+    </view>
+  </view>
+
+  <!-- 注册头部 -->
+  <view class="register-header">
+    <view class="register-logo-wrap">
+      <image class="register-logo" src="/images/logo.png" mode="aspectFit"></image>
+    </view>
+    <text class="register-title">填写用户信息</text>
+    <text class="register-desc">用于本机识别、计算记录和项目资料显示</text>
+  </view>
+
+  <!-- 注册表单 -->
+  <view class="glass register-card">
+    <view class="card-title">账户信息</view>
+
+    <!-- 姓名 -->
+    <view class="form-field">
+      <text class="form-label">姓名<text class="required">*</text></text>
+      <input class="form-input" placeholder="请输入姓名" value="{{formName}}" bindinput="onNameInput" maxlength="20"/>
+    </view>
+
+    <!-- 手机号 -->
+    <view class="form-field">
+      <text class="form-label">手机号<text class="required">*</text></text>
+      <input class="form-input" type="number" placeholder="请输入11位手机号" value="{{formPhone}}" bindinput="onPhoneInput" maxlength="11"/>
+    </view>
+
+    <!-- 公司/单位 -->
+    <view class="form-field">
+      <text class="form-label">公司/单位</text>
+      <input class="form-input" placeholder="选填" value="{{formCompany}}" bindinput="onCompanyInput" maxlength="40"/>
+    </view>
+
+    <!-- 职位 -->
+    <view class="form-field">
+      <text class="form-label">职位</text>
+      <input class="form-input" placeholder="选填" value="{{formPosition}}" bindinput="onPositionInput" maxlength="20"/>
+    </view>
+
+    <!-- 邮箱 -->
+    <view class="form-field">
+      <text class="form-label">邮箱</text>
+      <input class="form-input" placeholder="选填" value="{{formEmail}}" bindinput="onEmailInput" maxlength="50"/>
+    </view>
+  </view>
+
+  <!-- 协议确认 -->
+  <view class="agreement">
+    <checkbox-group bindchange="onAgreementChange">
+      <label class="agreement-row">
+        <checkbox class="agreement-checkbox" value="agreed" checked="{{agreed}}" color="#102744"></checkbox>
+        <view class="agreement-copy">
+          <text>我已阅读并同意</text>
+          <text class="agreement-link" catchtap="onTapUserAgreement">《用户服务协议》</text>
+          <text>和</text>
+          <text class="agreement-link" catchtap="onTapPrivacyPolicy">《隐私政策》</text>
+        </view>
+      </label>
+    </checkbox-group>
+  </view>
+
+  <!-- 操作按钮 -->
+  <view class="actions">
+    <button class="cta" bindtap="onSubmit" loading="{{submitting}}">保存用户信息</button>
+  </view>
+</view>

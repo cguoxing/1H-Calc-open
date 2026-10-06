@@ -1,0 +1,5 @@
+{
+  "name": "syncData",
+  "version": "1.0.0",
+  "description": "同步用户计算记录到云数据库"
+}

@@ -1,0 +1,82 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/calc/calc",
+    "pages/result/result",
+    "pages/history/history",
+    "pages/tools/tools",
+    "pages/converter/converter",
+    "pages/standard/standard",
+    "pages/settings/settings",
+    "pages/pre-consult/pre-consult",
+    "pages/bidding/bidding",
+    "pages/manual/manual",
+    "pages/faq/faq",
+    "pages/projects/projects",
+    "pages/project-detail/project-detail",
+    "pages/specialty-design/specialty-design",
+    "pages/land-consolidation/land-consolidation",
+    "pages/six-networks/six-networks",
+    "pages/condition-consulting/condition-consulting",
+    "pages/supervision/supervision",
+    "pages/construction-management/construction-management",
+    "pages/energy-saving/energy-saving",
+    "pages/village-revitalization/village-revitalization",
+    "pages/city-renewal/city-renewal",
+    "pages/compare/compare",
+    "pages/templates/templates",
+    "pages/policy/policy",
+    "pages/cloud-settings/cloud-settings",
+    "pages/register/register"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#F2F2F7",
+    "navigationBarTitleText": "易计算",
+    "navigationBarTextStyle": "black",
+    "backgroundColor": "#F2F2F7"
+  },
+  "tabBar": {
+    "custom": true,
+    "color": "#6e7f92",
+    "selectedColor": "#102744",
+    "backgroundColor": "#FAFDFF",
+    "borderStyle": "white",
+    "list": [
+      {
+        "pagePath": "pages/calc/calc",
+        "text": "取费计算",
+        "iconPath": "images/tab-calc.png",
+        "selectedIconPath": "images/tab-calc-active.png"
+      },
+      {
+        "pagePath": "pages/history/history",
+        "text": "取费历史",
+        "iconPath": "images/tab-history.png",
+        "selectedIconPath": "images/tab-history-active.png"
+      },
+      {
+        "pagePath": "pages/index/index",
+        "text": "首页",
+        "iconPath": "images/tab-home.png",
+        "selectedIconPath": "images/tab-home-active.png"
+      },
+      {
+        "pagePath": "pages/tools/tools",
+        "text": "工具箱",
+        "iconPath": "images/tab-tools.png",
+        "selectedIconPath": "images/tab-tools-active.png"
+      },
+      {
+        "pagePath": "pages/settings/settings",
+        "text": "用户设置",
+        "iconPath": "images/tab-settings.png",
+        "selectedIconPath": "images/tab-settings-active.png"
+      }
+    ]
+  },
+  "sitemapLocation": "sitemap.json",
+  "style": "v2",
+  "lazyCodeLoading": "requiredComponents",
+  "usingComponents": {}
+}

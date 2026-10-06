@@ -1,0 +1,127 @@
+/* Appbar Simulation */
+.appbar {
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* 注册头部 */
+.register-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 36rpx;
+}
+
+.register-logo-wrap {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 30rpx;
+  background: rgba(16, 39, 68, 0.04);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20rpx;
+}
+
+.register-logo {
+  width: 72rpx;
+  height: 72rpx;
+  border-radius: 16rpx;
+}
+
+.register-title {
+  font-size: 32rpx;
+  font-weight: 800;
+  color: var(--ink);
+  margin-bottom: 12rpx;
+}
+
+.register-desc {
+  font-size: 22rpx;
+  color: var(--muted);
+  text-align: center;
+  line-height: 1.5;
+  padding: 0 32rpx;
+}
+
+/* 注册卡片 */
+.register-card {
+  padding: 36rpx 40rpx;
+}
+
+.card-title {
+  margin: 0 0 24rpx;
+  font-size: 24rpx;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+/* 表单字段 */
+.form-field {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 28rpx;
+}
+
+.form-field:last-of-type {
+  margin-bottom: 0;
+}
+
+.form-label {
+  font-size: 24rpx;
+  font-weight: 600;
+  color: var(--slate);
+  margin-bottom: 14rpx;
+}
+
+.required {
+  color: #FF3B30;
+  margin-left: 4rpx;
+}
+
+.form-input {
+  height: 88rpx;
+  padding: 0 24rpx;
+  font-size: 26rpx;
+  color: var(--ink);
+  background: rgba(108, 123, 143, 0.04);
+  border-radius: 16rpx;
+  border: 1rpx solid rgba(16, 37, 68, 0.06);
+}
+
+/* 协议说明 */
+.agreement {
+  margin-top: 24rpx;
+  padding: 0 8rpx;
+}
+
+.agreement-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 14rpx;
+  font-size: 22rpx;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.agreement-checkbox {
+  flex-shrink: 0;
+  transform: scale(0.78);
+  transform-origin: left top;
+  margin-top: 2rpx;
+}
+
+.agreement-copy {
+  flex: 1;
+  min-width: 0;
+}
+
+.agreement-link {
+  color: #102744;
+  font-weight: 700;
+}
+
+/* 操作按钮 */
+.actions {
+  margin-top: 32rpx;
+}

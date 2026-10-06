@@ -1,0 +1,48 @@
+<view class="container">
+  <!-- Simulated AppBar -->
+  <view class="appbar">
+    <view class="brand" bindtap="onGoHome">
+      <image class="logo" src="/images/logo.png" mode="aspectFit"></image>
+      <text>易计算</text>
+    </view>
+  </view>
+
+  <!-- Segmented Categories -->
+  <scroll-view class="glass segmented" scroll-x="true" scroll-with-animation="true" style="white-space: nowrap; width: 100%;">
+    <view class="segments" style="display: inline-flex; width: max-content;">
+      <button class="{{currentCategory === 'length' ? 'on' : ''}}" bindtap="onCategoryChange" data-cat="length">长度</button>
+      <button class="{{currentCategory === 'area' ? 'on' : ''}}" bindtap="onCategoryChange" data-cat="area">面积</button>
+      <button class="{{currentCategory === 'volume' ? 'on' : ''}}" bindtap="onCategoryChange" data-cat="volume">体积</button>
+      <button class="{{currentCategory === 'angle' ? 'on' : ''}}" bindtap="onCategoryChange" data-cat="angle">角度</button>
+      <button class="{{currentCategory === 'power' ? 'on' : ''}}" bindtap="onCategoryChange" data-cat="power">功率</button>
+      <button class="{{currentCategory === 'radix' ? 'on' : ''}}" bindtap="onCategoryChange" data-cat="radix">进制</button>
+    </view>
+  </scroll-view>
+
+  <view class="form-section">数值录入</view>
+  <view class="glass form-card">
+    <view class="row big input-row-wrap">
+      <text class="label">原始数值</text>
+      <input class="row-input text-right" type="digit" placeholder="在此输入数值" bindinput="onValueInput" value="{{inputValue}}" />
+      <picker class="unit-picker" range="{{inputUnits}}" range-key="name" value="{{inputUnitIndex}}" bindchange="onInputUnitChange">
+        <view class="unit-tag">
+          <text>{{inputUnits[inputUnitIndex].symbol || inputUnits[inputUnitIndex].name}}</text>
+          <text class="unit-arrow">▾</text>
+        </view>
+      </picker>
+    </view>
+  </view>
+
+  <view class="form-section">换算结果</view>
+  <view class="glass form-card">
+    <view class="row big" wx:for="{{results}}" wx:key="symbol">
+      <text class="label">{{item.name}}</text>
+      <view class="flex-row">
+        <text class="value">{{item.value}}</text>
+        <text class="unit" style="margin-left: 10rpx; font-weight: bold; color: var(--blue);">{{item.symbol}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="copyright">Copyright © 2026 1+H ARCH</view>
+</view>

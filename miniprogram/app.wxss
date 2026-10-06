@@ -1,0 +1,502 @@
+/* Shared Appbar — global header for all pages */
+.appbar {
+  min-height: 88rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24rpx;
+}
+
+.appbar-left {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  min-width: 0;
+  flex: 1;
+  overflow: hidden;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+  font-size: 28rpx;
+  font-weight: 800;
+  letter-spacing: .02em;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.appbar-sep {
+  font-size: 28rpx;
+  font-weight: 300;
+  color: var(--line);
+  flex-shrink: 0;
+  margin: 0 4rpx;
+}
+
+.appbar-title {
+  font-size: 24rpx;
+  font-weight: 600;
+  color: var(--muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.appbar-dots {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  flex-shrink: 0;
+  padding: 12rpx 6rpx;
+  margin-left: 8rpx;
+}
+
+.appbar-dots .dot {
+  width: 8rpx;
+  height: 8rpx;
+  border-radius: 50%;
+  background: var(--ink);
+}
+
+.logo {
+  width: 60rpx;
+  height: 60rpx;
+  border-radius: 14rpx;
+  display: block;
+  box-shadow: 0 4rpx 12rpx rgba(47, 62, 82, 0.08);
+}
+
+.capsule .dots {
+  display: flex;
+  justify-content: center;
+  gap: 8rpx;
+}
+
+.capsule .dots .dot-item {
+  width: 8rpx;
+  height: 8rpx;
+  border-radius: 50%;
+  background: var(--ink);
+}
+
+.capsule .split { 
+  height: 28rpx; 
+  background: rgba(108,123,143,.18); 
+}
+
+.mini-circle {
+  width: 32rpx;
+  height: 32rpx;
+  border: 3rpx solid var(--ink);
+  border-radius: 50%;
+  margin: auto;
+  position: relative;
+}
+
+.mini-circle::after {
+  content: "";
+  position: absolute;
+  top: 6rpx;
+  left: 6rpx;
+  right: 6rpx;
+  bottom: 6rpx;
+  border-radius: inherit;
+  background: var(--ink);
+}
+
+
+/** Global Styles for YiCalc — Deep Ink & Slate Flat Design (v6) **/
+page {
+  --ink: #111827;            /* Slate/Gray 900 */
+  --muted: #6b7280;          /* Gray 500 */
+  --line: rgba(16, 37, 68, 0.05);
+  --glass: #ffffff;          /* Pure white flat card background */
+  --glass-strong: #ffffff;
+  --blue: #102744;           /* High contrast brand color */
+  --icon-bg: #f1f5f9;        /* Light slate background for icons */
+  --slate: #4b5563;          /* Gray 600 */
+  --text-secondary: #4b5563;
+  --shadow: 0 4rpx 16rpx rgba(16, 37, 68, 0.03);
+  --soft-shadow: 0 2rpx 8rpx rgba(16, 37, 68, 0.02);
+
+  color: var(--ink);
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", sans-serif;
+  line-height: 1.5;
+  min-height: 100vh;
+  width: 100%;
+  overflow-x: hidden;
+  box-sizing: border-box;
+  background: #f5f7fa;        /* Clean flat slate gray-blue base background */
+}
+
+view, scroll-view, text, button, input, picker, textarea {
+  box-sizing: border-box;
+}
+
+button::after {
+  border: none;
+}
+
+/* Page base padding */
+.container {
+  padding: 36rpx 44rpx 156rpx;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  box-sizing: border-box;
+  overflow-x: hidden;
+}
+
+/* Standardized White Cards with Soft Borders & Shadows */
+.glass {
+  border: 1rpx solid rgba(16, 37, 68, 0.05);
+  background: var(--glass);
+  border-radius: 20rpx;
+  box-shadow: var(--shadow);
+}
+
+.soft {
+  border: 1rpx solid rgba(16, 37, 68, 0.04);
+  background: var(--glass-strong);
+  border-radius: 16rpx;
+  box-shadow: var(--soft-shadow);
+}
+
+/* Headings */
+h1, .h1 {
+  margin: 0 0 20rpx;
+  font-size: 40rpx;
+  line-height: 1.1;
+  font-weight: 900;
+  color: var(--ink);
+}
+
+h2, .h2 {
+  margin: 32rpx 0 16rpx;
+  font-size: 30rpx;
+  line-height: 1.2;
+  font-weight: 900;
+  color: var(--ink);
+}
+
+
+/* Generic Icon Container — matches UI design iconbox style */
+.iconbox {
+  width: 84rpx;
+  height: 84rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 22rpx;
+  color: #1d3046;
+  background: var(--icon-bg);
+  box-shadow: inset 0 1rpx rgba(255,255,255,.6);
+  overflow: hidden;
+}
+
+.iconbox image, .iconbox text {
+  width: 48rpx;
+  height: 48rpx;
+  display: block;
+}
+
+/* Arrow indicator (Chevron) — matching UI design */
+.chev {
+  width: 22rpx;
+  height: 22rpx;
+  border-right: 4rpx solid #657589;
+  border-bottom: 4rpx solid #657589;
+  transform: rotate(-45deg);
+  flex-shrink: 0;
+}
+
+/* Structured form cards (glass lists) */
+.form-section {
+  margin: 28rpx 0 12rpx;
+  padding: 0 16rpx;
+  font-size: 26rpx;
+  font-weight: 800;
+  color: var(--ink);
+}
+
+.form-card {
+  overflow: hidden;
+  margin-bottom: 28rpx;
+}
+
+.row {
+  min-height: 72rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 28rpx;
+  border-bottom: 1rpx solid var(--line);
+  font-size: 26rpx;
+  color: var(--ink);
+}
+
+.row:last-child {
+  border-bottom: 0;
+}
+
+.row.big {
+  min-height: 88rpx;
+}
+
+.row .label {
+  color: var(--ink);
+}
+
+.value, .row .value {
+  font-size: 26rpx;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.row .unit {
+  margin-left: 12rpx;
+  color: var(--muted);
+  font-size: 24rpx;
+}
+
+.hint {
+  color: var(--muted);
+  font-size: 22rpx;
+}
+
+/* Global Form Input Styles — slate flat specification */
+.row-input {
+  flex: 1;
+  border: none;
+  padding: 0 16rpx;
+  background: transparent;
+  height: 100%;
+  font-size: 26rpx;
+  color: var(--ink);
+  text-align: right;
+}
+
+.row-input:focus {
+  outline: none;
+}
+
+/* Flex layout utilities */
+.flex-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.flex-between {
+  justify-content: space-between;
+}
+
+.flex-1 {
+  flex: 1;
+}
+
+/* Text alignment utilities */
+.text-right {
+  text-align: right;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-left {
+  text-align: left;
+}
+
+/* Custom form components — matching UI design */
+.option {
+  height: 46rpx;
+  min-width: 80rpx;
+  border: 1rpx solid rgba(115,132,153,.19);
+  border-radius: 16rpx;
+  background: rgba(255,255,255,.52);
+  color: var(--ink);
+  font-size: 24rpx;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: inset 0 1rpx rgba(255,255,255,.7);
+  margin: 0;
+  padding: 0 14rpx;
+  width: auto !important;
+  font-weight: normal !important;
+}
+
+/* Toggle switch — matching UI design */
+.toggle {
+  width: 90rpx;
+  height: 46rpx;
+  border-radius: 999rpx;
+  background: #dfe8f0;
+  position: relative;
+  box-shadow: inset 0 1rpx 3rpx rgba(0,0,0,.04);
+  transition: background 0.2s ease;
+  flex-shrink: 0;
+}
+
+.toggle::before {
+  content: "";
+  position: absolute;
+  top: 4rpx;
+  left: 4rpx;
+  width: 38rpx;
+  height: 38rpx;
+  border-radius: 50%;
+  background: #f7fbff;
+  box-shadow: 0 2rpx 8rpx rgba(82,98,118,.18);
+  transition: left 0.2s ease;
+}
+
+.toggle.active {
+  background: var(--blue);
+}
+
+.toggle.active::before {
+  left: 48rpx;
+}
+
+/* Row double line stack layout */
+.row-stack {
+  min-height: 76rpx;
+  padding: 18rpx 28rpx;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  border-bottom: 1rpx solid var(--line);
+  font-size: 20rpx;
+}
+
+.row-stack:last-child {
+  border-bottom: 0;
+}
+
+.row-stack-left {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding-right: 20rpx;
+}
+
+.row-stack-title {
+  font-size: 24rpx;
+  font-weight: 800;
+  color: var(--ink);
+}
+
+.row-stack-desc {
+  margin-top: 6rpx;
+  color: var(--muted);
+  font-size: 20rpx;
+  line-height: 1.4;
+}
+
+/* Global Buttons CTA — matching UI design */
+.actions {
+  display: flex;
+  gap: 40rpx;
+  margin-top: 24rpx;
+}
+
+.cta {
+  flex: 1;
+  height: 88rpx;
+  line-height: 88rpx;
+  border: 0;
+  border-radius: 44rpx;
+  font-size: 28rpx;
+  font-weight: 700;
+  letter-spacing: .02em;
+  color: #ffffff;
+  background: var(--blue);
+  box-shadow: 0 6rpx 20rpx rgba(16, 39, 68, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100% !important;
+  margin: 0;
+}
+
+.cta.outline {
+  color: var(--blue);
+  background: transparent;
+  border: 2rpx solid var(--blue);
+  box-shadow: none;
+}
+
+.cta.reset {
+  color: var(--ink);
+  background: #ffffff;
+  border: 1rpx solid #cbd5e1;
+  box-shadow: none;
+}
+
+/* PNG image border — consistent 2rpx outer stroke */
+image {
+  border: 2rpx solid rgba(255,255,255,.35);
+  border-radius: 4rpx;
+}
+
+/* Reset textarea native styles for cross-device consistency */
+textarea {
+  border: none;
+  background: transparent;
+  outline: none;
+  -webkit-appearance: none;
+}
+
+/* Bottom Bar Tab Safe Spacing */
+.safe-bottom {
+  height: calc(132rpx + env(safe-area-inset-bottom));
+}
+
+.copyright {
+  text-align: center;
+  color: var(--muted);
+  font-size: 20rpx;
+  margin-top: 32rpx;
+  padding-bottom: 32rpx;
+}
+
+/* Segmented Control Global Styles (iOS style) */
+.segmented {
+  padding: 12rpx 16rpx;
+  background: rgba(16, 37, 68, 0.03);
+  border-radius: 20rpx;
+  margin-bottom: 24rpx;
+}
+
+.segments {
+  display: flex;
+  background: rgba(16, 37, 68, 0.02);
+  padding: 4rpx;
+  border-radius: 16rpx;
+  flex-direction: row;
+}
+
+.segments button {
+  flex: 1;
+  height: 64rpx;
+  line-height: 64rpx;
+  border-radius: 12rpx;
+  font-size: 24rpx;
+  font-weight: 500;
+  color: var(--muted);
+  background: transparent;
+  transition: all 0.2s ease;
+  margin: 0;
+  width: 100% !important;
+}
+
+.segments button.active, .segments button.on {
+  background: #ffffff;
+  color: var(--blue);
+  font-weight: 700;
+  box-shadow: 0 2rpx 8rpx rgba(16, 37, 68, 0.05);
+}

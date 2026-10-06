@@ -1,0 +1,527 @@
+<view class="container">
+  <!-- Header -->
+  <view class="appbar">
+    <view class="brand" bindtap="onGoHome">
+      <image class="logo" src="/images/logo.png" mode="aspectFit"></image>
+      <text>易计算</text>
+    </view>
+  </view>
+
+  <view class="draft-tip">{{draftNotice}}</view>
+
+  <!-- Engineering Type dropdown picker -->
+  <view class="form-section">工程类型</view>
+  <view class="glass form-card">
+    <picker bindchange="onTabChange" value="{{tabIndex}}" range="{{tabs}}" range-key="label">
+      <view class="row big">
+        <text class="label">当前类型</text>
+        <text class="value">{{tabs[tabIndex].label}}</text>
+        <view class="chev"></view>
+      </view>
+    </picker>
+  </view>
+
+  <!-- ============ S1 室内设计 ============ -->
+  <block wx:if="{{activeTab === 'S1'}}">
+    <view class="form-section">计费方式</view>
+    <view class="glass form-card">
+      <picker bindchange="onS1MethodChange" value="{{s1MethodIndex}}" range="{{s1Methods}}" range-key="label">
+        <view class="row big">
+          <text class="label">当前方式</text>
+          <text class="value">{{s1Methods[s1MethodIndex].label}}</text>
+          <view class="chev"></view>
+        </view>
+      </picker>
+    </view>
+
+    <block wx:if="{{s1.method === 'cost'}}">
+      <view class="form-section">工程费法参数</view>
+      <view class="glass form-card">
+        <view class="row big">
+          <text class="label">室内装修工程费</text>
+          <input class="row-input text-right" type="digit" placeholder="输入工程费" bindinput="onS1CostInput" value="{{s1.cost}}" />
+          <text class="unit">万元</text>
+        </view>
+        <view class="row big">
+          <text class="label">专业调整系数</text>
+          <text class="value">{{s1.specialtyCoef}}</text>
+          <button class="option">默认</button>
+        </view>
+        <view class="row big" bindtap="onTapS1Complexity">
+          <text class="label">复杂程度系数</text>
+          <text class="value">{{s1.complexityCoefVal}}（{{s1.complexity === 'I' ? 'I级' : (s1.complexity === 'II' ? 'II级' : 'III级')}}）</text>
+          <button class="option">选项</button>
+        </view>
+        <view class="row big">
+          <text class="label">附加调整系数</text>
+          <input class="row-input text-right" type="digit" placeholder="可手动修改" bindinput="onS1BaseDecoCoefInput" value="{{s1.baseDecoCoef}}" />
+          <picker bindchange="onS1BaseDecoCoefChange" value="{{s1.baseDecoCoefIndex}}" range="{{s1.baseDecoCoefOptions}}" range-key="label">
+            <button class="option">选项</button>
+          </picker>
+        </view>
+      </view>
+      <view class="form-section">附加其他服务（可叠加）</view>
+      <view class="glass form-card">
+        <view class="row-stack" wx:for="{{s1.addCoefOptions}}" wx:key="key">
+          <view class="row-stack-left">
+            <text class="row-stack-title">{{item.label}} (×{{item.value}})</text>
+          </view>
+          <view class="toggle {{item.checked ? 'active' : ''}}" bindtap="toggleS1AddCoef" data-key="{{item.key}}"></view>
+        </view>
+      </view>
+    </block>
+
+    <block wx:if="{{s1.method === 'area'}}">
+      <view class="form-section">面积指标法参数</view>
+      <view class="glass form-card">
+        <view class="row big">
+          <text class="label">设计面积</text>
+          <input class="row-input text-right" type="digit" placeholder="输入面积" bindinput="onS1AreaInput" value="{{s1.area}}" />
+          <text class="unit">m²</text>
+        </view>
+        <picker bindchange="onS1CategoryChange" value="{{s1.categoryIndex}}" range="{{s1.categories}}" range-key="label">
+          <view class="row big">
+            <text class="label">项目类别</text>
+            <text class="value">{{s1.categories[s1.categoryIndex].label}}</text>
+            <view class="chev"></view>
+          </view>
+        </picker>
+        <view class="row big" bindtap="onTapS1Complexity">
+          <text class="label">复杂程度</text>
+          <text class="value">{{s1.complexity === 'I' ? 'I级' : (s1.complexity === 'II' ? 'II级' : 'III级')}}</text>
+          <button class="option">选项</button>
+        </view>
+        <view class="row big">
+          <text class="label">取费单价</text>
+          <input class="row-input text-right" type="digit" placeholder="{{s1.unitPricePlaceholder}}" bindinput="onS1UnitPriceInput" value="{{s1.unitPrice}}" />
+          <text class="unit">元/m²</text>
+        </view>
+        <view class="row-stack">
+          <view class="row-stack-left">
+            <text class="row-stack-title">指定室内设计师 (+20%)</text>
+          </view>
+          <view class="toggle {{s1.designerPremium ? 'active' : ''}}" bindtap="toggleS1Designer"></view>
+        </view>
+      </view>
+    </block>
+  </block>
+
+  <!-- ============ S3 园林和景观设计 ============ -->
+  <block wx:if="{{activeTab === 'S3'}}">
+    <view class="form-section">计费方式</view>
+    <view class="glass form-card">
+      <picker bindchange="onS3MethodChange" value="{{s3MethodIndex}}" range="{{s3Methods}}" range-key="label">
+        <view class="row big">
+          <text class="label">当前方式</text>
+          <text class="value">{{s3Methods[s3MethodIndex].label}}</text>
+          <view class="chev"></view>
+        </view>
+      </picker>
+    </view>
+
+    <block wx:if="{{s3.method === 'cost'}}">
+      <view class="form-section">工程费法参数</view>
+      <view class="glass form-card">
+        <view class="row big">
+          <text class="label">室外工程费</text>
+          <input class="row-input text-right" type="digit" placeholder="输入工程费" bindinput="onS3CostInput" value="{{s3.cost}}" />
+          <text class="unit">万元</text>
+        </view>
+        <view class="row big">
+          <text class="label">专业调整系数</text>
+          <text class="value">{{s3.specialtyCoef}}（园林绿化工程）</text>
+          <button class="option">默认</button>
+        </view>
+        <view class="row big" bindtap="onTapS3Complexity">
+          <text class="label">复杂程度系数</text>
+          <text class="value">{{s3.complexityCoefVal}}（{{s3.complexity === 'I' ? 'I级 一般道路/片林' : (s3.complexity === 'II' ? 'II级 标准景区/公建' : 'III级 公园/高标准')}}）</text>
+          <button class="option">选项</button>
+        </view>
+        <view class="row big">
+          <text class="label">附加调整系数</text>
+          <text class="value">{{s3.baseLandscapeCoefOptions[s3.baseLandscapeCoefIndex].label}}</text>
+          <picker bindchange="onS3BaseLandscapeCoefChange" value="{{s3.baseLandscapeCoefIndex}}" range="{{s3.baseLandscapeCoefOptions}}" range-key="label">
+            <button class="option">选项</button>
+          </picker>
+        </view>
+      </view>
+      <view class="form-section">附加其他服务（可叠加）</view>
+      <view class="glass form-card">
+        <view class="row-stack" wx:for="{{s3.addCoefOptions}}" wx:key="key">
+          <view class="row-stack-left">
+            <text class="row-stack-title">{{item.label}}</text>
+          </view>
+          <view class="toggle {{item.checked ? 'active' : ''}}" bindtap="toggleS3AddCoef" data-key="{{item.key}}"></view>
+        </view>
+      </view>
+    </block>
+
+    <block wx:if="{{s3.method === 'area'}}">
+      <view class="form-section">面积指标法参数</view>
+      <view class="glass form-card">
+        <view class="row big">
+          <text class="label">景观面积</text>
+          <input class="row-input text-right" type="digit" placeholder="输入面积" bindinput="onS3AreaInput" value="{{s3.area}}" />
+          <text class="unit">m²</text>
+        </view>
+        <picker bindchange="onS3LandscapeTypeChange" value="{{s3.landscapeTypeIndex}}" range="{{s3.landscapeTypes}}" range-key="label">
+          <view class="row big">
+            <text class="label">景观类型</text>
+            <text class="value">{{s3.landscapeTypes[s3.landscapeTypeIndex].label}}</text>
+            <view class="chev"></view>
+          </view>
+        </picker>
+        <view class="row big" bindtap="onTapS3Complexity">
+          <text class="label">复杂程度</text>
+          <text class="value">{{s3.complexity === 'I' ? 'I级' : (s3.complexity === 'II' ? 'II级' : 'III级')}}</text>
+          <button class="option">选项</button>
+        </view>
+        <view class="row big">
+          <text class="label">取费单价</text>
+          <input class="row-input text-right" type="digit" placeholder="输入单价" bindinput="onS3UnitPriceInput" value="{{s3.unitPrice}}" />
+          <text class="unit">元/m²</text>
+        </view>
+      </view>
+    </block>
+  </block>
+
+  <!-- ============ S4 私宅自建 ============ -->
+  <block wx:if="{{activeTab === 'S4'}}">
+    <view class="form-section">私宅自建设计取费</view>
+    <view class="glass form-card">
+      <view class="row big">
+        <text class="label">建筑面积</text>
+        <input class="row-input text-right" type="digit" placeholder="输入面积" bindinput="onS4AreaInput" value="{{s4.area}}" />
+        <text class="unit">m²</text>
+      </view>
+      <view class="row big" bindtap="onTapS4Complexity">
+        <text class="label">复杂程度</text>
+        <text class="value">{{s4.complexity === 'I' ? 'I级 (简单)' : (s4.complexity === 'II' ? 'II级 (中等)' : 'III级 (复杂)')}}</text>
+        <button class="option">选项</button>
+      </view>
+      <view class="row big">
+        <text class="label">建筑设计单价</text>
+        <input class="row-input text-right" type="digit" placeholder="输入单价" bindinput="onS4DesignUnitPriceInput" value="{{s4.designUnitPrice}}" />
+        <text class="unit">元/m²</text>
+      </view>
+      <view class="row-stack">
+        <view class="row-stack-left">
+          <text class="row-stack-title">含室内装修设计</text>
+          <text class="row-stack-desc">建筑+装修一体化设计</text>
+        </view>
+        <view class="toggle {{s4.includeDeco ? 'active' : ''}}" bindtap="toggleS4Deco"></view>
+      </view>
+      <view class="row big" wx:if="{{s4.includeDeco}}">
+        <text class="label">装修设计单价</text>
+        <input class="row-input text-right" type="digit" placeholder="输入单价" bindinput="onS4DecoUnitPriceInput" value="{{s4.decoUnitPrice}}" />
+        <text class="unit">元/m²</text>
+      </view>
+      <view class="row-stack">
+        <view class="row-stack-left">
+          <text class="row-stack-title">含园林绿化设计</text>
+          <text class="row-stack-desc">庭院、露台、宅旁绿化等户外空间</text>
+        </view>
+        <view class="toggle {{s4.includeLandscape ? 'active' : ''}}" bindtap="toggleS4Landscape"></view>
+      </view>
+      <view class="row big" wx:if="{{s4.includeLandscape}}">
+        <text class="label">园林设计单价</text>
+        <input class="row-input text-right" type="digit" placeholder="输入单价" bindinput="onS4LandscapeUnitPriceInput" value="{{s4.landscapeUnitPrice}}" />
+        <text class="unit">元/m²</text>
+      </view>
+    </view>
+  </block>
+
+  <!-- ============ S5 导视标识系统设计及制作 ============ -->
+  <block wx:if="{{activeTab === 'S5'}}">
+    <view class="form-section">计费方式</view>
+    <view class="glass form-card">
+      <picker bindchange="onS5MethodChange" value="{{s5MethodIndex}}" range="{{s5Methods}}" range-key="label">
+        <view class="row big">
+          <text class="label">当前方式</text>
+          <text class="value">{{s5Methods[s5MethodIndex].label}}</text>
+          <view class="chev"></view>
+        </view>
+      </picker>
+    </view>
+
+    <block wx:if="{{s5.method === 'investment'}}">
+      <view class="form-section">按总投资百分比</view>
+      <view class="glass form-card">
+        <view class="row big">
+          <text class="label">标识总投资</text>
+          <input class="row-input text-right" type="digit" placeholder="输入标识项目总投资" bindinput="onS5CostInput" value="{{s5.cost}}" />
+          <text class="unit">万元</text>
+        </view>
+      </view>
+    </block>
+
+    <block wx:if="{{s5.method === 'area'}}">
+      <view class="form-section">按面积指标</view>
+      <view class="glass form-card">
+        <view class="row big">
+          <text class="label">设计面积</text>
+          <input class="row-input text-right" type="digit" placeholder="输入面积" bindinput="onS5AreaInput" value="{{s5.area}}" />
+          <text class="unit">m²</text>
+        </view>
+        <picker bindchange="onS5SignageTypeChange" value="{{s5.signageTypeIndex}}" range="{{s5.signageTypes}}" range-key="label">
+          <view class="row big">
+            <text class="label">标识类型</text>
+            <text class="value">{{s5.signageTypes[s5.signageTypeIndex].label}}</text>
+            <view class="chev"></view>
+          </view>
+        </picker>
+        <view class="row big">
+          <text class="label">取费单价</text>
+          <input class="row-input text-right" type="digit" placeholder="输入单价" bindinput="onS5UnitPriceInput" value="{{s5.unitPrice}}" />
+          <text class="unit">元/m²</text>
+        </view>
+      </view>
+    </block>
+
+    <block wx:if="{{s5.method === 'production'}}">
+      <view class="form-section">制作安装费清单</view>
+      <view class="glass form-card">
+        <view class="row-stack" wx:for="{{s5.productionItems}}" wx:key="type">
+          <view class="row-stack-left">
+            <block wx:if="{{item.custom}}">
+              <input class="row-input custom-item-name" placeholder="项目名称" bindinput="onS5ProdNameInput" data-index="{{index}}" value="{{item.name}}" />
+              <view class="custom-item-meta">
+                <input class="row-input text-right" type="digit" placeholder="单价" bindinput="onS5ProdUnitPriceInput" data-index="{{index}}" value="{{item.unitPrice}}" />
+                <text>元 /</text>
+                <input class="row-input" placeholder="单位" bindinput="onS5ProdUnitInput" data-index="{{index}}" value="{{item.unit}}" />
+              </view>
+            </block>
+            <block wx:else>
+              <text class="row-stack-title">{{item.name}}</text>
+              <text class="row-stack-desc">{{item.unitPrice}}元 × {{item.qty}}{{item.unit}}</text>
+            </block>
+          </view>
+          <view style="display:flex;align-items:center;gap:12rpx;">
+            <input class="row-input text-right" type="number" placeholder="数量" bindinput="onS5ProdQtyInput" data-index="{{index}}" value="{{item.qty}}" style="width:120rpx;" />
+            <text class="value" style="min-width:100rpx;text-align:right;">{{item.displayValue}}万</text>
+            <view wx:if="{{item.custom}}" class="mini-delete" bindtap="onS5RemoveProductionItem" data-index="{{index}}">
+              <image src="/images/trash.png"></image>
+            </view>
+          </view>
+        </view>
+        <view class="add-list-item" bindtap="onS5AddProductionItem">
+          <image src="/images/plus.png"></image>
+          <text>增加项目</text>
+        </view>
+        <view class="row big" style="border-top:1rpx solid var(--line);">
+          <text class="label">安装费率</text>
+          <input class="row-input text-right" type="number" placeholder="默认20" bindinput="onS5InstallRateInput" value="{{s5.installRate}}" />
+          <text class="unit">%</text>
+        </view>
+      </view>
+    </block>
+  </block>
+
+  <!-- ============ S6 软装陈设艺术设计 ============ -->
+  <block wx:if="{{activeTab === 'S6'}}">
+    <view class="form-section">计费方式</view>
+    <view class="glass form-card">
+      <picker bindchange="onS6MethodChange" value="{{s6MethodIndex}}" range="{{s6Methods}}" range-key="label">
+        <view class="row big">
+          <text class="label">当前方式</text>
+          <text class="value">{{s6Methods[s6MethodIndex].label}}</text>
+          <view class="chev"></view>
+        </view>
+      </picker>
+    </view>
+
+    <block wx:if="{{s6.method === 'area'}}">
+      <view class="form-section">按套内面积</view>
+      <view class="glass form-card">
+        <view class="row big">
+          <text class="label">套内面积</text>
+          <input class="row-input text-right" type="digit" placeholder="输入面积" bindinput="onS6AreaInput" value="{{s6.area}}" />
+          <text class="unit">m²</text>
+        </view>
+        <view class="row big">
+          <text class="label">套内设计单价</text>
+          <input class="row-input text-right" type="digit" placeholder="输入单价" bindinput="onS6UnitPriceInput" value="{{s6.unitPrice}}" />
+          <text class="unit">元/m²</text>
+        </view>
+      </view>
+    </block>
+
+    <block wx:if="{{s6.method === 'budget'}}">
+      <view class="form-section">按软装预算</view>
+      <view class="glass form-card">
+        <view class="row big">
+          <text class="label">软装总预算</text>
+          <input class="row-input text-right" type="digit" placeholder="输入预算" bindinput="onS6BudgetInput" value="{{s6.budget}}" />
+          <text class="unit">万元</text>
+        </view>
+        <view class="row big">
+          <text class="label">设计费率</text>
+          <text class="value">8%~15% (取中值11.5%)</text>
+          <button class="option">默认</button>
+        </view>
+      </view>
+    </block>
+
+    <block wx:if="{{s6.method === 'days'}}">
+      <view class="form-section">按摆场天数</view>
+      <view class="glass form-card">
+        <view class="row big">
+          <text class="label">摆场天数</text>
+          <input class="row-input text-right" type="number" placeholder="输入天数" bindinput="onS6DaysInput" value="{{s6.days}}" />
+          <text class="unit">天</text>
+        </view>
+        <view class="row big">
+          <text class="label">日单价</text>
+          <input class="row-input text-right" type="digit" placeholder="默认3500" bindinput="onS6DayUnitPriceInput" value="{{s6.dayUnitPrice}}" />
+          <text class="unit">元/天</text>
+        </view>
+      </view>
+    </block>
+  </block>
+
+  <!-- ============ S7 建筑环境艺术照明设计 ============ -->
+  <block wx:if="{{activeTab === 'S7'}}">
+    <view class="form-section">计费方式</view>
+    <view class="glass form-card">
+      <picker bindchange="onS7MethodChange" value="{{s7MethodIndex}}" range="{{s7Methods}}" range-key="label">
+        <view class="row big">
+          <text class="label">当前方式</text>
+          <text class="value">{{s7Methods[s7MethodIndex].label}}</text>
+          <view class="chev"></view>
+        </view>
+      </picker>
+    </view>
+
+    <view class="form-section">照明设计参数</view>
+    <view class="glass form-card">
+      <view class="row big" wx:if="{{s7.method === 'cost'}}">
+        <text class="label">照明工程费</text>
+        <input class="row-input text-right" type="digit" placeholder="输入工程费" bindinput="onS7CostInput" value="{{s7.cost}}" />
+        <text class="unit">万元</text>
+      </view>
+      <view class="row big" wx:if="{{s7.method === 'cost'}}">
+        <text class="label">设计费比例</text>
+        <input class="row-input text-right" type="number" placeholder="参考面积法，可修改" bindinput="onS7RateInput" value="{{s7.rate}}" />
+        <text class="unit">%</text>
+      </view>
+      <view class="row big" wx:if="{{s7.method === 'area'}}">
+        <text class="label">设计面积</text>
+        <input class="row-input text-right" type="digit" placeholder="输入面积" bindinput="onS7AreaInput" value="{{s7.area}}" />
+        <text class="unit">m²</text>
+      </view>
+      <picker bindchange="onS7LightingTypeChange" value="{{s7.lightingTypeIndex}}" range="{{s7.lightingTypes}}" range-key="label">
+        <view class="row big">
+          <text class="label">照明类型</text>
+          <text class="value">{{s7.lightingTypes[s7.lightingTypeIndex].label}}</text>
+          <view class="chev"></view>
+        </view>
+      </picker>
+      <view class="row big" wx:if="{{s7.method === 'area'}}">
+        <text class="label">照明设计单价</text>
+        <input class="row-input text-right" type="digit" placeholder="输入单价" bindinput="onS7UnitPriceInput" value="{{s7.unitPrice}}" />
+        <text class="unit">元/m²</text>
+      </view>
+    </view>
+  </block>
+
+  <!-- ============ S8 特殊声学装修设计 ============ -->
+  <block wx:if="{{activeTab === 'S8'}}">
+    <view class="form-section">计费方式</view>
+    <view class="glass form-card">
+      <picker bindchange="onS8MethodChange" value="{{s8MethodIndex}}" range="{{s8Methods}}" range-key="label">
+        <view class="row big">
+          <text class="label">当前方式</text>
+          <text class="value">{{s8Methods[s8MethodIndex].label}}</text>
+          <view class="chev"></view>
+        </view>
+      </picker>
+    </view>
+
+    <block wx:if="{{s8.method === 'rate'}}">
+      <view class="form-section">工程费法参数</view>
+      <view class="glass form-card">
+        <view class="row big">
+          <text class="label">声学装修工程费</text>
+          <input class="row-input text-right" type="digit" placeholder="输入工程费" bindinput="onS8CostInput" value="{{s8.cost}}" />
+          <text class="unit">万元</text>
+        </view>
+        <picker bindchange="onS8AcousticTypeChange" value="{{s8.acousticTypeIndex}}" range="{{s8.acousticTypes}}" range-key="label">
+          <view class="row big">
+            <text class="label">声学项目类型</text>
+            <text class="value">{{s8.acousticTypes[s8.acousticTypeIndex].label}}</text>
+            <view class="chev"></view>
+          </view>
+        </picker>
+      </view>
+    </block>
+
+    <block wx:if="{{s8.method === 'area'}}">
+      <view class="form-section">面积法参数</view>
+      <view class="glass form-card">
+        <view class="row big">
+          <text class="label">隔声/降噪面积</text>
+          <input class="row-input text-right" type="digit" placeholder="输入面积" bindinput="onS8AreaInput" value="{{s8.area}}" />
+          <text class="unit">m²</text>
+        </view>
+        <view class="row big">
+          <text class="label">隔声设计单价</text>
+          <input class="row-input text-right" type="digit" placeholder="输入单价" bindinput="onS8UnitPriceInput" value="{{s8.unitPrice}}" />
+          <text class="unit">元/m²</text>
+        </view>
+      </view>
+    </block>
+  </block>
+
+  <view class="form-section">额外服务与收费</view>
+  <view class="glass form-card">
+    <view class="row-stack">
+      <view class="row-stack-left">
+        <text class="row-stack-title">总体设计费（+5%）</text>
+        <text class="row-stack-desc">承担项目总体设计统筹服务时计取</text>
+      </view>
+      <view class="toggle {{extraServices.overall ? 'active' : ''}}" bindtap="toggleExtraOverall"></view>
+    </view>
+    <view class="row-stack">
+      <view class="row-stack-left">
+        <text class="row-stack-title">主体设计协调费（+5%）</text>
+        <text class="row-stack-desc">承担主体设计及相关专项协调时计取</text>
+      </view>
+      <view class="toggle {{extraServices.coordination ? 'active' : ''}}" bindtap="toggleExtraCoordination"></view>
+    </view>
+    <view class="row big">
+      <text class="label">非标设备设计计费额</text>
+      <input class="row-input text-right" type="digit" placeholder="无则不填" bindinput="onNonStdDevBaseInput" value="{{extraServices.nonStdDevBase}}" />
+      <text class="unit">万元</text>
+    </view>
+    <view class="row big" wx:if="{{extraServices.nonStdDevBase}}">
+      <text class="label">非标设备设计费率</text>
+      <input class="row-input text-right" type="number" placeholder="默认10" bindinput="onNonStdDevRateInput" value="{{extraServices.nonStdDevRate}}" />
+      <text class="unit">%</text>
+    </view>
+  </view>
+
+  <!-- Common Settings -->
+  <view class="form-section">核算微调</view>
+  <view class="glass form-card">
+    <view class="row big">
+      <text class="label">浮动折扣比例</text>
+      <input class="row-input text-right" type="number" placeholder="默认100" bindinput="onDiscountInput" value="{{discount}}" />
+      <text class="unit">%</text>
+    </view>
+    <view class="row big">
+      <text class="label">增值税税率</text>
+      <input class="row-input text-right" type="number" placeholder="默认6" bindinput="onTaxRateInput" value="{{taxRate}}" />
+      <text class="unit">%</text>
+    </view>
+  </view>
+
+  <!-- CTA -->
+  <view class="actions">
+    <button class="cta" bindtap="onCalculate">确认计算</button>
+    <button class="cta reset" bindtap="onReset">重置</button>
+  </view>
+
+  <view style="height: 50rpx;"></view>
+
+  <view class="copyright">Copyright © 2026 1+H ARCH</view>
+</view>

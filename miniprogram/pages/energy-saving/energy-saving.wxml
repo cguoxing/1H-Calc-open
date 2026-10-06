@@ -1,0 +1,120 @@
+<view class="container">
+  <view class="appbar">
+    <view class="brand" bindtap="onGoHome">
+      <image class="logo" src="/images/logo.png" mode="aspectFit"></image>
+      <text>易计算</text>
+    </view>
+  </view>
+  <view class="h1-subtitle">依据：国家计委、建设部《工程勘察设计收费标准（2002年修订本）》+ 新能源工程专业系数</view>
+
+  <!-- 1. 项目信息 -->
+  <view class="form-section">1. 项目基础信息</view>
+  <view class="glass form-card">
+    <view class="row big">
+      <text class="label">项目名称</text>
+      <input class="row-input" placeholder="输入名称以存入历史" bindinput="onNameInput" value="{{projectName}}" />
+    </view>
+  </view>
+
+  <!-- 2. 能源类型 -->
+  <view class="form-section">2. 选择能源工程类型</view>
+  <view class="glass form-card">
+    <picker bindchange="onEnergyTypeChange" value="{{energyTypeIndex}}" range="{{energyTypes}}" range-key="name">
+      <view class="row big">
+        <text class="label">能源类型</text>
+        <text class="value">{{energyTypes[energyTypeIndex].icon}} {{energyTypes[energyTypeIndex].name}}</text>
+        <view class="chev"></view>
+      </view>
+    </picker>
+
+    <!-- 新能源工程：输入计费额 -->
+    <block wx:if="{{energyTypes[energyTypeIndex].id !== 'saving'}}">
+      <view class="row big">
+        <text class="label">工程计费额</text>
+        <input class="row-input text-right" type="digit" placeholder="输入计费额" bindinput="onCostInput" value="{{cost}}" />
+        <text class="unit">万元</text>
+      </view>
+    </block>
+
+    <!-- 节能改造：输入面积 + 改造类型 -->
+    <block wx:if="{{energyTypes[energyTypeIndex].id === 'saving'}}">
+      <view class="row big">
+        <text class="label">建筑面积</text>
+        <input class="row-input text-right" type="digit" placeholder="输入建筑面积" bindinput="onAreaInput" value="{{area}}" />
+        <text class="unit">m²</text>
+      </view>
+      <picker bindchange="onSavingTypeChange" value="{{savingTypeIndex}}" range="{{savingTypes}}" range-key="name">
+        <view class="row big">
+          <text class="label">改造类型</text>
+          <text class="value">{{savingTypes[savingTypeIndex].name}}</text>
+          <view class="chev"></view>
+        </view>
+      </picker>
+
+      <!-- 附加调整 -->
+      <view class="row-stack-title">特殊调整项（可多选）</view>
+      <view class="chip-group">
+        <view class="chip {{item.selected ? 'active' : ''}}"
+              wx:for="{{savingAddOptions}}" wx:key="id" wx:for-item="item"
+              bindtap="toggleSavingAdd" data-id="{{item.id}}">
+          <text>{{item.name}}（×{{item.coef}}）</text>
+          <image wx:if="{{item.selected}}" src="/images/check.png" class="chip-check"></image>
+        </view>
+      </view>
+    </block>
+  </view>
+
+  <!-- 3. 收费 -->
+  <view class="form-section">3. 收费比例与税率</view>
+  <view class="glass form-card">
+    <view class="row big">
+      <text class="label">总收费比例</text>
+      <input class="row-input text-right" type="digit" placeholder="100" bindinput="onDiscountInput" value="{{discount}}" />
+      <text class="unit">%</text>
+    </view>
+    <view class="row big">
+      <text class="label">增值税率</text>
+      <input class="row-input text-right" type="digit" placeholder="6" bindinput="onTaxRateInput" value="{{taxRate}}" />
+      <text class="unit">%</text>
+    </view>
+  </view>
+
+  <!-- 计算 -->
+  <button class="cta" bindtap="onCalculate">开始计算</button>
+
+  <!-- 结果 -->
+  <block wx:if="{{resultVisible && result}}">
+    <view class="result-card" style="background: linear-gradient(135deg, #FF9500, rgba(255, 149, 0, 0.7));">
+      <view class="result-label">{{result.stageName}}设计费合计</view>
+      <view class="result-value">¥ {{result.total}} 万</view>
+      <view class="result-subtitle">{{result.specialtyName || ''}}</view>
+    </view>
+
+    <view class="form-section">费用明细</view>
+    <view class="glass form-card">
+      <view class="row big">
+        <text class="label">计费基数</text>
+        <text class="value">{{result.cost}}</text>
+      </view>
+      <view class="row big">
+        <text class="label">基本设计费</text>
+        <text class="value">{{result.basePrice}} 万元</text>
+      </view>
+      <view class="row big" wx:if="{{result.specialtyCoef !== 1.0}}">
+        <text class="label">专业调整系数</text>
+        <text class="value">{{result.specialtyCoef}}（{{result.specialtyName}}）</text>
+      </view>
+      <view class="row big" wx:if="{{result.addDetails && result.addDetails.length}}" wx:for="{{result.addDetails}}" wx:key="name">
+        <text class="label">{{item.name}}</text>
+        <text class="value">×{{item.coef}}</text>
+      </view>
+      <view class="row big" style="background: rgba(13, 29, 53, 0.04);">
+        <text style="font-weight: 700;">合计</text>
+        <text class="value" style="font-size: 34rpx; font-weight: 800; color: #0d1d35;">{{result.total}} 万元</text>
+      </view>
+    </view>
+  </block>
+
+  <view style="height: 80rpx;"></view>
+  <view class="copyright">Copyright © 2026 1+H ARCH</view>
+</view>

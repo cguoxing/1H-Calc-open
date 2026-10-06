@@ -1,0 +1,127 @@
+<view class="container">
+  <!-- WeChat-style AppBar simulated -->
+  <view class="appbar">
+    <view class="brand" bindtap="onGoHome">
+      <image class="logo" src="/images/logo.png" mode="aspectFit"></image>
+      <text>易计算</text>
+    </view>
+  </view>
+
+  <!-- 数据保存状态卡 -->
+  <view class="glass settings-card">
+    <view class="card-header">
+      <text class="card-title">数据保存</text>
+      <view class="status-badge {{cloudReady ? 'online' : 'offline'}}">
+        <view class="status-dot"></view>
+        <text>{{cloudReady ? '同步已启用' : '本机保存'}}</text>
+      </view>
+    </view>
+
+    <view class="info-row">
+      <text class="info-label">当前方式</text>
+      <text class="info-value">{{cloudReady ? '账户同步' : '本机保存'}}</text>
+    </view>
+    <view class="info-row">
+      <text class="info-label">备份方式</text>
+      <text class="info-value">服务器备份</text>
+    </view>
+
+    <view class="env-guide" wx:if="{{!cloudReady}}">
+      <text class="env-guide-title">当前策略</text>
+      <text class="env-guide-text">您的数据优先保存在本机。开启备份后，小程序会在后台将必要数据备份到服务器，便于后续恢复和统计。</text>
+    </view>
+  </view>
+
+  <!-- 账户与登录卡 -->
+  <view class="glass settings-card">
+    <view class="card-title">本地账户</view>
+
+    <!-- 已登录：显示账户信息 -->
+    <block wx:if="{{hasAccount}}">
+      <view class="user-row">
+        <view class="avatar">{{accountInitial}}</view>
+        <view class="user-info">
+          <view class="user-info-row">
+            <image class="user-info-icon name-icon" src="/images/profile-user.svg" mode="aspectFit"></image>
+            <text class="user-name">{{accountName}}</text>
+          </view>
+          <view class="user-info-row">
+            <image class="user-info-icon phone-icon" src="/images/profile-phone.svg" mode="aspectFit"></image>
+            <text class="user-phone">{{accountPhone || '未设置'}}</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="detail-row" wx:if="{{accountCompany}}">
+        <text class="detail-label">公司/单位</text>
+        <text class="detail-value">{{accountCompany}}</text>
+      </view>
+      <view class="detail-row" wx:if="{{accountPosition}}">
+        <text class="detail-label">职位</text>
+        <text class="detail-value">{{accountPosition}}</text>
+      </view>
+      <view class="detail-row" wx:if="{{accountEmail}}">
+        <text class="detail-label">邮箱</text>
+        <text class="detail-value">{{accountEmail}}</text>
+      </view>
+      <view class="detail-row">
+        <text class="detail-label">账户 ID</text>
+        <text class="detail-value mono">{{maskedOpenid}}</text>
+      </view>
+      <view class="detail-row" wx:if="{{registeredAt}}">
+        <text class="detail-label">注册时间</text>
+        <text class="detail-value">{{registeredAt}}</text>
+      </view>
+    </block>
+
+    <!-- 未登录：显示入口 -->
+    <block wx:else>
+      <view class="setting-row" bindtap="onTapRegister">
+        <view class="iconbox">
+          <image src="/images/settings-plus.svg" mode="aspectFit"></image>
+        </view>
+        <text class="row-label">填写用户信息</text>
+        <view class="chev"></view>
+      </view>
+
+      <view class="setting-row" bindtap="onTapLogin">
+        <view class="iconbox">
+          <image src="/images/profile-user.svg" mode="aspectFit"></image>
+        </view>
+        <text class="row-label">查看本机账户</text>
+        <view class="chev"></view>
+      </view>
+    </block>
+  </view>
+
+  <!-- 登录态操作卡（已登录时显示） -->
+  <view class="glass settings-card" wx:if="{{hasAccount}}">
+    <view class="card-title">账户操作</view>
+
+    <view class="setting-row" bindtap="onTapEdit">
+      <view class="iconbox">
+        <image src="/images/settings-doc.svg" mode="aspectFit"></image>
+      </view>
+      <text class="row-label">编辑账户信息</text>
+      <view class="chev"></view>
+    </view>
+
+    <view class="setting-row danger" bindtap="onTapLogout">
+      <view class="iconbox">
+        <image src="/images/settings-trash.svg" mode="aspectFit"></image>
+      </view>
+      <text class="row-label">退出登录</text>
+      <view class="chev"></view>
+    </view>
+
+    <view class="setting-row danger" bindtap="onTapDeleteAccount">
+      <view class="iconbox">
+        <image src="/images/settings-trash.svg" mode="aspectFit"></image>
+      </view>
+      <text class="row-label">注销并删除云端备份</text>
+      <view class="chev"></view>
+    </view>
+  </view>
+
+  <view class="copyright">Copyright © 2026 1+H ARCH</view>
+</view>

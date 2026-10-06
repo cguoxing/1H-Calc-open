@@ -1,0 +1,114 @@
+<view class="container">
+  <view class="appbar">
+    <view class="brand" bindtap="onGoHome">
+      <image class="logo" src="/images/logo.png" mode="aspectFit"></image>
+      <text>易计算</text>
+    </view>
+  </view>
+  <view class="h1-subtitle">依据：住建部《城市更新行动实施方案》+ 各省市城市更新条例</view>
+
+  <!-- 1. 项目信息 -->
+  <view class="form-section">1. 项目基础信息</view>
+  <view class="glass form-card">
+    <view class="row big">
+      <text class="label">项目名称</text>
+      <input class="row-input" placeholder="输入名称以存入历史" bindinput="onNameInput" value="{{projectName}}" />
+    </view>
+
+    <view class="row big">
+      <text class="label">工程计费额</text>
+      <input class="row-input text-right" type="digit" placeholder="输入工程计费额" bindinput="onCostInput" value="{{cost}}" />
+      <text class="unit">万元</text>
+    </view>
+  </view>
+
+  <!-- 2. 更新类型 -->
+  <view class="form-section">2. 城市更新类型</view>
+  <view class="glass form-card">
+    <picker bindchange="onRenewalTypeChange" value="{{renewalTypeIndex}}" range="{{renewalTypes}}" range-key="name">
+      <view class="row big">
+        <text class="label">更新类型</text>
+        <text class="value">{{renewalTypes[renewalTypeIndex].icon}} {{renewalTypes[renewalTypeIndex].name}}</text>
+        <view class="chev"></view>
+      </view>
+    </picker>
+
+    <picker bindchange="onComplexityChange" value="{{complexityIndex}}" range="{{complexityOptions}}" range-key="name">
+      <view class="row big">
+        <text class="label">复杂程度</text>
+        <text class="value">{{complexityOptions[complexityIndex].name}}（×{{complexityOptions[complexityIndex].coef}}）</text>
+        <view class="chev"></view>
+      </view>
+    </picker>
+  </view>
+
+  <!-- 3. 附加系数 -->
+  <view class="form-section">3. 特殊调整项（可多选）</view>
+  <view class="glass form-card">
+    <view class="chip-group">
+      <view class="chip {{item.selected ? 'active' : ''}}"
+            wx:for="{{addOptions}}" wx:key="id" wx:for-item="item"
+            bindtap="toggleAdd" data-id="{{item.id}}">
+        <text>{{item.name}}（×{{item.coef}}）</text>
+        <image wx:if="{{item.selected}}" src="/images/check.png" class="chip-check"></image>
+      </view>
+    </view>
+  </view>
+
+  <!-- 4. 收费 -->
+  <view class="form-section">4. 收费比例与税率</view>
+  <view class="glass form-card">
+    <view class="row big">
+      <text class="label">总收费比例</text>
+      <input class="row-input text-right" type="digit" placeholder="100" bindinput="onDiscountInput" value="{{discount}}" />
+      <text class="unit">%</text>
+    </view>
+    <view class="row big">
+      <text class="label">增值税率</text>
+      <input class="row-input text-right" type="digit" placeholder="6" bindinput="onTaxRateInput" value="{{taxRate}}" />
+      <text class="unit">%</text>
+    </view>
+  </view>
+
+  <button class="cta" bindtap="onCalculate">开始计算</button>
+
+  <!-- 结果 -->
+  <block wx:if="{{resultVisible && result}}">
+    <view class="result-card" style="background: linear-gradient(135deg, #007AFF, rgba(0, 122, 255, 0.7));">
+      <view class="result-label">{{result.stageName}}设计费合计</view>
+      <view class="result-value">¥ {{result.total}} 万</view>
+      <view class="result-subtitle">计费额 {{result.cost}} 万元</view>
+    </view>
+
+    <view class="form-section">费用明细</view>
+    <view class="glass form-card">
+      <view class="row big">
+        <text class="label">工程计费额</text>
+        <text class="value">{{result.cost}} 万元</text>
+      </view>
+      <view class="row big">
+        <text class="label">工程设计基价</text>
+        <text class="value">{{result.basePrice}} 万元</text>
+      </view>
+      <view class="row big" wx:if="{{result.typeCoef}}">
+        <text class="label">更新类型系数</text>
+        <text class="value">×{{result.typeCoef}}（{{result.stageName}}）</text>
+      </view>
+      <view class="row big">
+        <text class="label">复杂程度系数</text>
+        <text class="value">×{{result.complexityCoef || 1.0}}</text>
+      </view>
+      <view class="row big" wx:if="{{result.addDetails && result.addDetails.length}}" wx:for="{{result.addDetails}}" wx:key="name">
+        <text class="label">{{item.name}}</text>
+        <text class="value">×{{item.coef}}</text>
+      </view>
+      <view class="row big" style="background: rgba(0, 122, 255, 0.04);">
+        <text style="font-weight: 700;">合计</text>
+        <text class="value" style="font-size: 34rpx; font-weight: 800; color: #0d1d35;">{{result.total}} 万元</text>
+      </view>
+    </view>
+  </block>
+
+  <view style="height: 80rpx;"></view>
+  <view class="copyright">Copyright © 2026 1+H ARCH</view>
+</view>
