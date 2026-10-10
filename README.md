@@ -3,10 +3,11 @@
 **English** | [简体中文](README.zh-CN.md)
 
 > Chinese engineering fee standards in your pocket: describe a project in one sentence and get a quote you can trace back to the rules.
+<img width="344" height="344" alt="gh_c444b0d8d8b5_344" src="https://github.com/user-attachments/assets/f8e1d420-46ec-45d1-a2e0-00663c42b75d" />
 
 YiCalc is a WeChat Mini Program for architects, engineers, cost consultants and tendering agents in China. Enter the fee base, pick the discipline and complexity, and it calculates the service fee according to national and local fee standards, then exports a PDF quotation showing every formula, coefficient and the document number of the standard used.
 
-This project is an entry in the 2026 WeChat Mini Program Development Contest (theme: "Coexisting with AI"). It is developed and open-sourced by [1+H ARCH](https://www.1h-arch.com). The app's interface is in Chinese.
+It is developed and open-sourced by [1+H ARCH](https://www.1h-arch.com). The app's interface is in Chinese.
 
 ## Features
 
