@@ -1,4 +1,4 @@
-# YiCalc (易计算) · Engineering Fee Calculator for WeChat
+# 1H-Calc (易计算) · Engineering Fee Calculator for WeChat
 
 **English** | [简体中文](README.zh-CN.md)
 
@@ -18,7 +18,7 @@ This project is an entry in the 2026 WeChat Mini Program Development Contest (th
 | Smart input | Type "municipal road design, 30 million" on the home page; stage, discipline and amount are recognized and the right calculator opens (keyword rules) |
 | Traceable results | The result page shows the base price, every coefficient, the linear-interpolation formula and each calculation step |
 | PDF quotation | One tap generates a quotation ready to send to the client |
-| Projects | Group several stages under one project, see totals, compare options |
+|项目| Group several stages under one project, see totals, compare options |
 | References | Fee standards, policy library, user manual, FAQ, unit converter |
 | Two editions | Full engineering edition; specialty edition for interior / landscape / signage / acoustic design firms |
 
@@ -118,6 +118,6 @@ Please make sure `npm run check` passes before submitting.
 
 ## License
 
-[MIT](LICENSE) © 2026 1+H ARCH (Shanghai Yihong Architectural Engineering Design Co., Ltd.)
+[MIT](LICENSE) © 2026 1+H ARCH (Shanghai 1H Architectural Engineering Design Co., Ltd.)
 
 Government fee documents in `standards/` remain the property of their issuing authorities and are provided for reference only.
