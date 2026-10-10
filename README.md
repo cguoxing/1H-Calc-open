@@ -41,7 +41,7 @@ Requirements: [WeChat DevTools](https://developers.weixin.qq.com/miniprogram/en/
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/<your-name>/<repo>.git
+   git clone https://github.com/cguoxing/1H-Calc-open.git
    ```
 
 2. Import the project root in WeChat DevTools.
@@ -56,11 +56,26 @@ miniprogram/
 ├── utils/             calculation core (calculator.js, interpolation.js, …), PDF generation, backup
 ├── data/              base price tables, coefficient tables, specialty rate data
 └── custom-tab-bar/    custom tab bar
-cloudfunctions/        WeChat Cloud functions (disabled by default)
-west-host-backup/      optional PHP backup API and monitoring page
+cloudfunctions/        WeChat Cloud functions (early approach, disabled by default)
+west-host-backup/      current approach: PHP backup API and monitoring page
 standards/             transcribed fee standards
 test-*.js              automated checks
 ```
+
+## Backend: from WeChat Cloud Development to a self-hosted backup
+
+**All calculation runs on the device; no backend is required.** The backend serves one optional feature only: account and history backup for registered users. That piece went through one migration.
+
+**First approach — WeChat Cloud Development (free cloud functions + cloud database).** The `cloudfunctions/` directory keeps this implementation:
+
+- `getOpenid` — obtain the user's OpenID via cloud call;
+- `userAccount` — store one profile per openid (`users` collection: register / query / check-if-registered);
+- `syncData` — sync calculation history to the cloud database (`calc_history` collection);
+- `generatePDF` — PDF quotation helper (the actual PDF is produced on the client in `pdf-generator.js`).
+
+**Current approach — a PHP backup endpoint on West.cn (西部数码) shared hosting.** Because the number of users and the amount of data stayed small, this was later replaced with something simpler, cheaper and easier to self-manage: a **database-free** PHP API (`west-host-backup/`) deployed on existing West.cn shared hosting, which archives each user's data as a JSON file. Authentication still rides on WeChat — before each backup the Mini Program fetches a one-time `wx.login` code and the server exchanges it for an openid — so **the Mini Program holds no secrets**.
+
+The two are mutually exclusive: the repo defaults to the self-hosted `west-host-backup/`, and `cloudfunctions/` is kept for reference, disabled by default. If you prefer WeChat Cloud Development, deploy `cloudfunctions/` to your own cloud environment and switch the client back to cloud calls.
 
 ## Tests
 
@@ -76,7 +91,7 @@ Runs 9 checks in one go: JS syntax, JSON validity, WXSS, page/asset consistency 
 - Automatic backup runs only for users who have registered and accepted the privacy policy, and only uploads when data has changed.
 - Users can delete their cloud backup at any time under Settings → Account & Data Backup.
 
-### Optional: self-hosted backup
+### Self-hosted backup (west-host-backup)
 
 `west-host-backup/` is a database-free PHP backup API that runs on ordinary shared hosting:
 
@@ -86,7 +101,7 @@ Runs 9 checks in one go: JS syntax, JSON validity, WXSS, page/asset consistency 
 
 The API authenticates users by exchanging the one-time `wx.login` code for an openid on the server, so the Mini Program contains no secrets. See [west-host-backup/README.md](west-host-backup/README.md) (Chinese).
 
-**Note:** `config.php` contains your AppSecret. It is excluded by `.gitignore`; never commit it.
+**Note:** `config.php` contains your AppSecret. It is excluded by `.gitignore`; never commit it. Real user backup data (`west-host-backup/data/`) is also not part of this open-source repository.
 
 ## Built with AI
 

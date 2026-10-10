@@ -41,7 +41,7 @@
 1. 克隆仓库：
 
    ```bash
-   git clone https://github.com/<your-name>/<repo>.git
+   git clone https://github.com/cguoxing/1H-Calc-open.git
    ```
 
 2. 用微信开发者工具导入项目根目录。
@@ -56,11 +56,26 @@ miniprogram/
 ├── utils/             计算核心（calculator.js、interpolation.js 等）、PDF 生成、备份
 ├── data/              基价表、系数表、各专项费率数据
 └── custom-tab-bar/    自定义底部导航
-cloudfunctions/        微信云开发云函数（默认未启用）
-west-host-backup/      可选：PHP 虚拟主机备份接口与监控页
+cloudfunctions/        微信云开发云函数（早期方案，默认未启用）
+west-host-backup/      当前方案：PHP 虚拟主机备份接口与监控页
 standards/             收费标准整理稿
 test-*.js              自动化检查脚本
 ```
+
+## 后端架构：从微信云开发到自建备份
+
+易计算的**全部计算都在小程序本机完成，不依赖任何后端**。后端只服务于一个可选功能：登录用户的账户与历史数据备份。这部分经历了一次演进。
+
+**最初方案 —— 微信云开发（免费云函数 + 云数据库）。** `cloudfunctions/` 目录保留了这套实现：
+
+- `getOpenid`：通过云调用换取用户 OpenID；
+- `userAccount`：按 openid 唯一存储用户档案（`users` 集合，注册 / 查询 / 判断是否已注册）；
+- `syncData`：把计算历史同步到云数据库（`calc_history` 集合）；
+- `generatePDF`：PDF 报价单辅助（实际 PDF 在前端 `pdf-generator.js` 生成）。
+
+**现方案 —— 西部数码虚拟主机上的 PHP 备份端。** 由于用户和数据量都不大，后来改成了更简单、成本更低、也更便于自己掌控的方案：在已有的西部数码虚拟主机上部署一个**无需数据库**的 PHP 接口（`west-host-backup/`），用户数据以 JSON 文件按人存档。鉴权沿用微信机制——小程序每次备份前调用 `wx.login` 取一次性 code，由服务端换取 openid，因此**小程序端不保存任何密钥**。
+
+两套方案二选一即可：仓库默认走 `west-host-backup/` 的自建备份，`cloudfunctions/` 作为参考保留、默认未启用。若你更习惯微信云开发，把 `cloudfunctions/` 部署到自己的云环境、并在前端改回云调用即可。
 
 ## 测试
 
@@ -76,7 +91,7 @@ npm run check
 - 只有注册并同意隐私政策的用户才会自动备份，且仅在数据变化时上传。
 - 用户可在「用户设置 → 账户与数据备份」中注销并删除云端备份。
 
-### 可选：自建备份服务
+### 自建备份服务（west-host-backup）
 
 `west-host-backup/` 是一套无需数据库的 PHP 备份接口，适合普通虚拟主机：
 
@@ -86,7 +101,7 @@ npm run check
 
 接口用 `wx.login` 的一次性 code 在服务端换取 openid 鉴权，小程序代码里不保存任何密钥。详见 [west-host-backup/README.md](west-host-backup/README.md)。
 
-**注意：** `config.php` 含 AppSecret，已在 `.gitignore` 中排除，切勿提交。
+**注意：** `config.php` 含 AppSecret，已在 `.gitignore` 中排除，切勿提交；真实用户备份数据（`west-host-backup/data/`）也不包含在本开源仓库中。
 
 ## 与 AI 共生
 
